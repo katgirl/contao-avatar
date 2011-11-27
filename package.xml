@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE contaopackage>
+<extension name="avatar" date="20110822">
+    <author user="acenes" name="Peter Koch" website="http://ibk-software.com" />
+    <copyright>(c) 2008,2009,2010 Peter Koch</copyright>
+    <license>GNU GPL V2</license>
+    <classification type="free" category="utility" />
+    <release version="10000019" build="32" date="20100204" />
+    <contao minversion="20070069" maxversion="20090009" />
+    <language code="fr">
+        <translator user="cyril" name="Cyril Ponce" website="http://www.contao.fr" />
+        <searchtags>Avatar</searchtags>
+        <title>Avatars</title>
+        <teaser>Ajout d&#039;un avatar pour les membres et les utilisateurs</teaser>
+        <description>&lt;p&gt;A frontend module is included to allow members to upload their own avatars.&lt;/p&gt; &lt;p&gt;For simple use there is a insert tag available that will insert a IMG element with the avatar of the currently connected frontend member. The avatars can however also be used directly by other extensions through a simple API.&lt;/p&gt;</description>
+        <releasenotes>&lt;ul&gt; &lt;li&gt;Extended insert tags to allow display of a distinct members or users avatar.&lt;/li&gt; &lt;li&gt;Restricted insert tags to work only on front end, otherwise they could not be edited in back end articles, news etc.&lt;/li&gt; &lt;/ul&gt;</releasenotes>
+        <manual link="http://contifex.com/wiki/extensions/avatar" />
+        <forum link="http://contifex.com/helpdesk/category/6.html" />
+    </language>
+    <language code="en">
+        <translator user="acenes" name="Peter Koch" website="http://ibk-software.com" />
+        <searchtags>Avatar,Members,Users</searchtags>
+        <title>Avatars</title>
+        <teaser>Adds avatars for frontend members and for backend users</teaser>
+        <description>&lt;p&gt;Forntend members can edit their avatar either by means of the member settings module, or a distinct module for the avatar alone.&lt;/p&gt;
+
+&lt;p&gt;For simple uses there are insert tags available that will output a IMG element with the avatar of the currently connected frontend member, or any member or user addressed by ID. The avatars can however also be used directly by other extensions through a simple API.&lt;/p&gt;</description>
+        <releasenotes>&lt;h3&gt;Version 1.0.1 (2010-02-04)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Fixed missing legend in backend personal data&lt;/li&gt;
+&lt;/ul&gt;</releasenotes>
+        <manual link="http://contifex.com/wiki/extensions/avatar" />
+    </language>
+    <language code="de">
+        <translator user="acenes" name="Peter Koch" website="http://ibk-software.com" />
+        <searchtags>Avatar,Mitglieder,Benutzer</searchtags>
+        <title>Avatare</title>
+        <teaser>Fügt Avatare für Frontend Mitglieder und Backend Benutzer hinzu.</teaser>
+        <description>&lt;p&gt;Frontend Mitglieder können ihren eigenen Avatar entweder über das Mitgliedereinstellungs-Modul, oder ein spezielles Modul nur fü den Avatar pfelgen.&lt;/p&gt; 
+
+&lt;p&gt;Für einfachere Anwendungen existiert ein Insert-Tag welches den Avatar des aktuell angemeldeten Mitgliedes, oder per Benutzer-ID auch den eines beliebigen anderen Mitglieds oder Benutzers als IMG Tag einfügt. Avatare können jedoch mittels einer einfachen API auch direkt in anderen Erweiterungen verwendet werden.&lt;/p&gt;</description>
+        <releasenotes>&lt;h3&gt;Version 1.0.1 (2010-02-04)&lt;/h3&gt; &lt;ul&gt; &lt;li&gt;Fehlende Legende in persölichen Einstellungen im Backend behoben&lt;/li&gt; &lt;/ul&gt;</releasenotes>
+        <manual link="http://contifex.com/wiki/extensions/avatar" />
+        <forum link="http://www.typolight-community.de/forumdisplay.php?f=10" />
+    </language>
+    <language code="nl">
+        <translator user="pchammer" name="Peter Hamers" />
+        <searchtags>Avatar,Leden,Gebruikers</searchtags>
+        <title>Avatars</title>
+        <teaser>Voegt avatars voor frontend leden en voor backend gebruikers toe</teaser>
+        <description>&lt;p&gt;Frontend leden kunnen hun avatar aanpassen door middel van de leden instellingen module of een bepaalde module voor de avatar.&lt;/p&gt;
+&lt;p&gt;Voor gewone gebruikers zijn er invoeg tags beschikbaar welke een IMG element uitvoeren met de avatar van de huidige verbonden frontend gebruiker,of elk lid of gebruiker aangeduid door een ID. De avatars kunnen echter ook worden gebruikt door andere extensies door middel van een eenvoudige API.&lt;/p&gt;</description>
+        <releasenotes>&lt;ul&gt;&lt;li&gt;Toegevoegd zijn betere kwaliteit standaard avatars in png formaat.&lt;/li&gt;
+&lt;li&gt;Avatar nu beschikbaar als frontend formulier veld en direct in frontend leden instellingen.&lt;/li&gt;
+&lt;li&gt;Inline javascript verwijderd van de templates, formulier enctype wordt intern omgezet naar multipart door TYPOlight.&lt;/li&gt;
+&lt;li&gt;De avatar widgets in frontend en backend mogen ook gebruikt worden voor andere doeleinden zoals bedrijfslogo`s bijvoorbeeld,mogelijk gemaakt door nieuwe DCA eval opties.&lt;/li&gt;
+&lt;/ul&gt;</releasenotes>
+        <manual link="http://contifex.com/wiki/extensions/avatar" />
+        <forum link="http://contifex.com/helpdesk/category/6.html" />
+    </language>
+    <language code="ru">
+        <translator user="kuzmich" name="Dmitri Kuznetsov" website="http://www.onfreedom.ru" />
+        <searchtags>Avatar,Members,Users</searchtags>
+        <title>Аватары</title>
+        <teaser>Модуль внешнего и внутреннего интерфейса, дающий возможность участникам и пользователям изменять свой аватар.</teaser>
+        <description>&lt;p&gt;Участники могут изменять свой аватар посредством модуля настроек участника или в отдельном модуле аватара.&lt;/p&gt; &lt;p&gt;Для использования есть доступные тэги вставки, которые выводят IMG элемент с аватаром подключенного участника внешнего интерфейса, либо любого участника или пользователя, к которому обращается идентификатор. Аватары могут использоваться другими расширениями через простой API.&lt;/p&gt;</description>
+        <releasenotes>&lt;h3&gt;Version 1.0.1 (2010-02-04)&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;Fixed missing legend in backend personal data&lt;/li&gt;&lt;/ul&gt;</releasenotes>
+        <manual link="http://contifex.com/wiki/extensions/avatar" />
+        <forum link="http://contifex.com/helpdesk/category/6.html" />
+    </language>
+    <language code="pl">
+        <translator user="qrczak" name="Marcin Lachowski" website="http://www.typolight.pl" />
+        <searchtags>Avatar,Członkowie,Użytkownicy</searchtags>
+        <title>Avatar</title>
+        <teaser>Dodaje avatar dla członków serwisu oraz użytkowników admin panelu.</teaser>
+        <description>&lt;p&gt;Członkowie serwisu mogą edytować swój avatar poprzez moduł ustawień członka lub odrębny moduł avatara.&lt;/p&gt;
+&lt;p&gt;Dla łatwiejszego używania dostępne są tagi, które wyświetlają obrazek dla aktualnie zalogowanego członka lub członka/użytkownika o konkretnym ID. Avatar może również być używany bezpośrednio przez inne rozszerzenia poprzez proste API.&lt;/p&gt;</description>
+        <releasenotes>&lt;ul&gt;
+&lt;li&gt;Added better quality default avatars in png format.&lt;/li&gt;
+&lt;li&gt;Avatar now available as frontend form field and directly in frontend member settings.&lt;/li&gt;
+&lt;li&gt;Inline javascript removed from the templates, now form enctype is set to multipart by TYPOlight internally.&lt;/li&gt;
+&lt;li&gt;The avatar widgets in frontend and backend my now also be used for other purpose such as company logo for example, because of new DCA eval options.&lt;/li&gt;
+&lt;/ul&gt;</releasenotes>
+        <manual link="http://contifex.com/wiki/extensions/avatar" />
+        <forum link="http://contifex.com/helpdesk/category/6.html" />
+    </language>
+    <language code="it">
+        <translator user="dan" name="Dan Nelu" website="http://www.dss.uniud.it" />
+        <searchtags>Avatar,Membri,Utilizzatori</searchtags>
+        <title>Avatar</title>
+        <teaser>Aggiunge avatar per i membri frontend e gli utilizzatori backend.</teaser>
+        <description>&lt;p&gt;I membri frontend possono modificare i loro avatar o atraverso il modulo di impostazioni o attraverso il singolo modulo avatar.&lt;/p&gt;
+
+&lt;p&gt;Per utilizzi semplici sono disponibili dei tag di inserimento che mostreranno un elemento con l&#039;avatar del membro frontend attualmente connesso, o di qualisasi membro o utilizzatore tramite l&#039;ID. Ad ogni modo, questi avatar possono essere utilizzati direttamente anche da altre estensioni attraverso una semplice API.&lt;/p&gt;</description>
+        <releasenotes>&lt;ul&gt;
+&lt;li&gt;Aggiunta una migliore qualità preimpostata per gli avatar in formato png.&lt;/li&gt;
+&lt;li&gt;Avatar ora disponibile come campo frontend e direttamente nelle impostazioni del membro frontend.&lt;/li&gt;
+&lt;li&gt;Inline javascript rimosso dalle template, adesso il campo enctype è impostato come multiparte internamente dal TYPOlight.&lt;/li&gt;
+&lt;li&gt;I widget dell&#039;avatar nel frontend e backend possono essere ora usati anche per altri scopi, come ad esempio il logo aziendale, grazie alle nuove opzioni DCA eval.&lt;/li&gt;
+&lt;/ul&gt;</releasenotes>
+        <manual link="http://contifex.com/wiki/extensions/avatar" />
+        <forum link="http://contifex.com/helpdesk/category/6.html" />
+    </language>
+    <language code="ro">
+        <translator user="purcaruionut" name="Ionuţ PURCARU" website="http://www.iroot.ro" />
+        <searchtags>Avatar,Membri,Utilizatori</searchtags>
+        <title>Avataruri</title>
+        <teaser>Adaugă avataruri pentru membri şi pentru utilizatori</teaser>
+        <description>&lt;p&gt;Membrii îşi pot edita avatarul fie prin intermediul setărilor modulului de membru, sau printr-un modul distinct doar pentru avatar. &lt;/p&gt; Pentru utilizări simple există tag-uri disponibile, care vor introduce un element IMG cu avatarul membrului conectat, sau orice alt membru sau de utilizator adresat prin ID. Imaginile asociate pot să fie utilizate şi direct de către alte extensii printr-un API simplu.&lt;/p&gt;</description>
+        <releasenotes>&lt;h3&gt;Versiunea 1.0.1 (2010-02-04)&lt;/h3&gt; &lt;ul&gt; &lt;li&gt;Repară legenda invizibilă în date personale din backend&lt;/li&gt; &lt;/ul&gt;</releasenotes>
+        <manual link="http://contifex.com/wiki/extensions/avatar" />
+    </language>
+    <language code="cs">
+        <translator user="frogzone" name="Tomas Petrlik" website="http://www.frogzone.cz" />
+        <searchtags>Avatar,Members,Users</searchtags>
+        <title>Avatary</title>
+        <teaser>Přidá avatary pro rozhraní frontend členů a pro backend uživatele</teaser>
+        <description>&lt;p&gt;Forntend members can edit their avatar either by means of the member settings module, or a distinct module for the avatar alone.&lt;/p&gt;
+
+&lt;p&gt;For simple uses there are insert tags available that will output a IMG element with the avatar of the currently connected frontend member, or any member or user addressed by ID. The avatars can however also be used directly by other extensions through a simple API.&lt;/p&gt;</description>
+        <releasenotes>&lt;h3&gt;Version 1.0.1 (2010-02-04)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Fixed missing legend in backend personal data&lt;/li&gt;
+&lt;/ul&gt;</releasenotes>
+        <manual link="http://contifex.com/wiki/extensions/avatar" />
+    </language>
+    <language code="lv">
+        <translator user="warrior" name="Maris Celmins" />
+        <searchtags>Avatars,biedri,lietotāji</searchtags>
+        <title>Avatars</title>
+        <teaser>Sniedz iespēju Frontend un Backend lietotājiem savam profilam pievienot avataru.</teaser>
+        <description>&lt;p&gt;Forntend lietotāji var rediģēt savu avataru pēc saviem ieskatiem lietotāju uzstādījumu sadaļā.&lt;/p&gt;</description>
+        <releasenotes>&lt;h3&gt;Version 1.0.1 (2010-02-04)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Uzlabota avataru kvalitāte, pēc noklusējuma - PNG formātā&lt;/li&gt;
+&lt;li&gt;No veidnņu sadaļas dzēsts JavaScript&lt;/li&gt;
+&lt;li&gt;Avatara rīks var tikt izmantots arī citiem mērķiem, piemēram - kā kompānijas logo&lt;/li&gt;
+&lt;/ul&gt;</releasenotes>
+        <manual link="http://contifex.com/wiki/extensions/avatar" />
+    </language>
+</extension>
