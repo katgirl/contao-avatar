@@ -10,6 +10,7 @@
 
 class AvatarForm extends Widget implements uploadable
 {
+	protected $avatarDirectory;
 	protected $blnSubmitInput = true;
 	protected $strTemplate = 'avatar_form';
 	protected $filename = 'avatar_%s';
@@ -23,6 +24,14 @@ class AvatarForm extends Widget implements uploadable
 		$this->loadLanguageFile('avatar');
 		$this->import('FrontendUser', 'User');
 
+		if (version_compare(VERSION, 3, '<')) {
+			$this->avatarDirectory = $GLOBALS['TL_CONFIG']['avatar_dir'];
+		}
+		else {
+			$objFile = \FilesModel::findByPk($GLOBALS['TL_CONFIG']['avatar_dir']);
+			$this->avatarDirectory = $objFile->path;
+		}
+		
 		// overwrite defaults
 		$dca = &$GLOBALS['TL_DCA']['tl_member']['fields'][$this->strName]['eval'];
 		$this->filename = $dca['filename'] ? $dca['filename'] : 'tl_member_%s';
@@ -118,7 +127,7 @@ class AvatarForm extends Widget implements uploadable
 
 		// save file
 		if (!$this->hasErrors()) {
-			$avfile = $GLOBALS['TL_CONFIG']['avatar_dir'].'/'.sprintf($this->filename,$this->User->id).'.'.$parts['extension'];
+			$avfile = $this->avatarDirectory.'/'.sprintf($this->filename,$this->User->id).'.'.$parts['extension'];
 			$this->import('Files');
 			$this->Files->move_uploaded_file($tmp, $avfile);
 			$this->Files->chmod($avfile, 0644);

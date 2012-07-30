@@ -14,9 +14,17 @@ class Avatar
 	{
 		$avatar = trim($avatar);
 		if ($avatar != '') return $avatar;
-		$dir = trim($GLOBALS['TL_CONFIG']['avatar_dir']);
+
+		if (version_compare(VERSION, 3, '<')) {
+			$dir = trim($GLOBALS['TL_CONFIG']['avatar_dir']);
+		}
+		else {
+			$objFile = \FilesModel::findByPk($GLOBALS['TL_CONFIG']['avatar_dir']);
+			$dir = $objFile->path;
+		}
+		
 		if ($dir == '') $dir = $GLOBALS['TL_CONFIG']['uploadPath'].'/avatars';
-		$dims = (int)$GLOBALS['TL_CONFIG']['avatar_maxdims'];
+		$dims = (int) $GLOBALS['TL_CONFIG']['avatar_maxdims'];
 		if (!in_array($dims, array(32, 48, 64, 80, 100, 128))) $dims = 80;
 		return trim($dir.'/default'.$dims.'.png');
 	} // filename

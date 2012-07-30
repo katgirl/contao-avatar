@@ -10,6 +10,7 @@
 
 class AvatarModule extends Module
 {
+	protected $avatarDirectory;
 	protected $strTemplate = 'avatar_module';
 	protected $form;
 	
@@ -20,6 +21,14 @@ class AvatarModule extends Module
 			$objTemplate->wildcard = '### PERSONAL AVATAR ###';
 			return $objTemplate->parse();
 		} // if
+
+		if (version_compare(VERSION, 3, '<')) {
+			$this->avatarDirectory = $GLOBALS['TL_CONFIG']['avatar_dir'];
+		}
+		else {
+			$objFile = \FilesModel::findByPk($GLOBALS['TL_CONFIG']['avatar_dir']);
+			$this->avatarDirectory = $objFile->path;
+		}
 
 		// Return if there is no logged in user
 		if (!FE_USER_LOGGED_IN) return '';
@@ -42,7 +51,8 @@ class AvatarModule extends Module
 		$this->Template->form = $this->form;
 		$form = $this->form;
 		
-		$form->formlink	= ($conf['rewriteURL'] ? '' : 'index.php/') . $this->getPageIdFromUrl() . URL_SUFFIX;
+		// $form->formlink	= ($conf['rewriteURL'] ? '' : 'index.php/') . $this->getPageIdFromUrl() . URL_SUFFIX;
+		$form->formlink = ampersand($this->Environment->request);
 		
 		if ((int)$this->Input->post('avatar_action')>0) {
 			// check reset
@@ -125,7 +135,7 @@ class AvatarModule extends Module
 
 			if ($ok) {
 				// save file
-				$avfile = $conf['avatar_dir'].'/tl_member_'.$this->User->id.'.'.$parts['extension'];
+				$avfile = $this->avatarDirectory.'/tl_member_'.$this->User->id.'.'.$parts['extension'];
 				$this->import('Files');
 				$this->Files->move_uploaded_file($tmp, $avfile);
 				$this->Files->chmod($avfile, 0644);
