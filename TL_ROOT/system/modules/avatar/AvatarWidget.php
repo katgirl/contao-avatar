@@ -10,6 +10,7 @@
 
 class AvatarWidget extends Widget implements uploadable
 {
+	protected $avatarDirectory;
 	protected $blnSubmitInput = true;
 	protected $strTemplate = 'avatar_widget';
 	protected $filename = 'avatar_%s';
@@ -22,6 +23,15 @@ class AvatarWidget extends Widget implements uploadable
 		$this->decodeEntities = true;
 		$this->loadLanguageFile('avatar');
 
+		
+		if (version_compare(VERSION, 3, '<')) {
+			$this->avatarDirectory = $GLOBALS['TL_CONFIG']['avatar_dir'];
+		}
+		else {
+			$objFile = \FilesModel::findByPk($GLOBALS['TL_CONFIG']['avatar_dir']);
+			$this->avatarDirectory = $objFile->path;
+		}
+		
 		// overwrite defaults
 		$dca = &$GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['eval'];
 		$this->filename = $dca['filename'] ? $dca['filename'] : $this->strTable.'_%s';
@@ -45,7 +55,7 @@ class AvatarWidget extends Widget implements uploadable
 	{
 		$avatar = trim($avatar);
 		if ($avatar != '') return $avatar;
-		return trim($GLOBALS['TL_CONFIG']['avatar_dir'].'/default'.$GLOBALS['TL_CONFIG']['avatar_maxdims'].'.png');
+		return trim($this->avatarDirectory.'/default'.$GLOBALS['TL_CONFIG']['avatar_maxdims'].'.png');
 	} // filename
 
 	protected function validator($aParam)
@@ -118,10 +128,12 @@ class AvatarWidget extends Widget implements uploadable
 			return '';
 		} // if
 
+				
 		// save file
 		if (!$this->hasErrors()) {
-			$avfile = $GLOBALS['TL_CONFIG']['avatar_dir'].'/'.sprintf($this->filename,$this->currentRecord).'.'.$parts['extension'];
+			$avfile = $this->avatarDirectory.'/'.sprintf($this->filename, $this->currentRecord).'.'.$parts['extension'];
 			$this->import('Files');
+
 			$this->Files->move_uploaded_file($tmp, $avfile);
 			$this->Files->chmod($avfile, 0644);
 			$this->blnSubmitInput = true;
