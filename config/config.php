@@ -9,6 +9,11 @@
  */
 
 /**
+ * Presettings
+ */
+$GLOBALS['TL_CONFIG']['avatar_dir'] = '';
+
+/**
  * Back end form fields
  */
 $GLOBALS['BE_FFL']['avatar'] = 'Avatar\Widget\AvatarFileUpload';
