@@ -35,16 +35,16 @@ class InsertTags extends \System
 			return false;
 		}
 
-		$strParams = \String::decodeEntities($strParams);
-		$strParams = str_replace('[&]', '&', $strParams);
-		$arrParams = explode('&', $strParams);
-
-		//get_Settings
+		// get default settings
 		$arrDims  = deserialize($GLOBALS['TL_CONFIG']['avatar_maxdims']);
 		$strAlt   = $GLOBALS['TL_CONFIG']['avatar_default_alt'];
 		$strTitle = $GLOBALS['TL_CONFIG']['avatar_default_title'];
 		$strClass = $GLOBALS['TL_CONFIG']['avatar_default_class'];
 
+		// parse query parameters
+		$strParams = \String::decodeEntities($strParams);
+		$strParams = str_replace('[&]', '&', $strParams);
+		$arrParams = explode('&', $strParams);
 		foreach ($arrParams as $strParam)
 		{
 			list($key, $value) = explode('=', $strParam);
@@ -76,69 +76,96 @@ class InsertTags extends \System
 					break;
 			}
 		}
+
+		// if no id given, use the current logged in member
 		if (!$arrTag[1]) {
+			// if no member is logged in, return anonymous avatar
 			if (!FE_USER_LOGGED_IN) {
 				return $this->generateAnonymousAvatar($arrDims);
 			}
-
-			$objMember = \MemberModel::findByPk(\FrontendUser::getInstance()->id);
-
-			if (!$objMember) {
-				return $this->generateAnonymousAvatar($arrDims);
-			}
-
-			$strAvatar = \FrontendUser::getInstance()->avatar;
-			$strAlt    = \String::parseSimpleTokens($strAlt, $objMember->row());
-			$strTitle  = \String::parseSimpleTokens($strTitle, $objMember->row());
-
-			if ($strAvatar == '' && \FrontendUser::getInstance()->gender != '') {
-				return '<img src="' . TL_FILES_URL . \Image::get(
-					"system/modules/avatar/assets/" . \FrontendUser::getInstance()->gender . ".png",
-					$arrDims[0],
-					$arrDims[1],
-					$arrDims[2]
-				) . '" width="' . $arrDims[0] . '" height="' . $arrDims[1] . '" alt="' . $strAlt . '" title="' . $strTitle . '" class="' . $strClass . '">';
-			}
-		}
-		elseif (is_numeric($arrTag[1])) {
-			$objUser = \Database::getInstance()
-				->prepare("SELECT * FROM tl_member WHERE id=?")
-				->execute($arrTag[1]);
-
-			if (!$objUser->next()) {
-				return $this->generateAnonymousAvatar($arrDims);
-			}
-
-			$strAvatar = $objUser->avatar;
-			$strAlt    = \String::parseSimpleTokens($strAlt, $objUser->row());
-			$strTitle  = \String::parseSimpleTokens($strTitle, $objUser->row());
+			$arrTag[1] = \FrontendUser::getInstance()->id;
 		}
 
-		$objFile = \FilesModel::findByPk($strAvatar);
+		// search the member record
+		$objMember = \MemberModel::findByPk($arrTag[1]);
 
-		if ($objFile === null) {
-			$strAvatar = 'system/modules/avatar/assets/male.png';
+		// return anonymous avatar, if member not found
+		if (!$objMember->next()) {
+			return $this->generateAnonymousAvatar($arrDims);
 		}
-		else {
+
+		// get the avatar
+		$strAvatar = $objMember->avatar;
+
+		// parse the alt and title text
+		$strAlt    = \String::parseSimpleTokens($strAlt, $objMember->row());
+		$strTitle  = \String::parseSimpleTokens($strTitle, $objMember->row());
+
+		// avatar available and file exists
+		if ($strAvatar &&
+			($objFile = \FilesModel::findByPk($strAvatar)) &&
+			file_exists(TL_ROOT . '/' . $objFile->path)
+		) {
 			$strAvatar = $objFile->path;
 		}
 
-		return '<img src="' . TL_FILES_URL . \Image::get(
-			$strAvatar,
+		// no avatar is set, but gender is available
+		else if ($strAvatar == '' && \FrontendUser::getInstance()->gender != '') {
+			$strAvatar = "system/modules/avatar/assets/" . \FrontendUser::getInstance()->gender . ".png";
+		}
+
+		// fallback to default avatar
+		else {
+			$strAvatar = 'system/modules/avatar/assets/male.png';
+		}
+
+		// resize if size is requested
+		$this->resize($strAvatar, $arrDims);
+
+		// generate the img tag
+		return sprintf(
+			'<img src="%s" width="%s" height="%s" alt="%s" title="%s" class="%s">',
+			TL_FILES_URL . $strAvatar,
 			$arrDims[0],
 			$arrDims[1],
-			$arrDims[2]
-		) . '" width="' . $arrDims[0] . '" height="' . $arrDims[1] . '" alt="' . $strAlt . '" title="' . $strTitle . '" class="' . $strClass . '">';
+			$strAlt,
+			$strTitle,
+			$strClass
+		);
+	}
+
+	protected function resize(&$strAvatar, &$arrDims)
+	{
+		if ($arrDims[0] || $arrDims[1]) {
+			$strAvatar = \Image::get(
+				$strAvatar,
+				$arrDims[0],
+				$arrDims[1],
+				$arrDims[2]
+			);
+
+			// read the new size to keep proportion
+			$objAvatar = new File($strAvatar);
+			$arrDims[0] = $objAvatar->width;
+			$arrDims[1] = $objAvatar->height;
+		}
 	}
 
 	protected function generateAnonymousAvatar($arrDims)
 	{
-		return '<img src="' . TL_FILES_URL . \Image::get(
-			"system/modules/avatar/assets/male.png",
+		$strAvatar = 'system/modules/avatar/assets/male.png';
+
+		$this->resize($strAvatar, $arrDims);
+
+		return sprintf(
+			'<img src="%s" width="%s" height="%s" alt="%s" title="%s" class="%s">',
+			$strAvatar,
 			$arrDims[0],
 			$arrDims[1],
-			$arrDims[2]
-		) . '" width="' . $arrDims[0] . '" height="' . $arrDims[1] . '" alt="' . $GLOBALS['TL_CONFIG']['avatar_anonymous_alt'] . '" title="' . $GLOBALS['TL_CONFIG']['avatar_anonymous_title'] . '" class="' . $GLOBALS['TL_CONFIG']['avatar_anonymous_class'] . '">';
+			$GLOBALS['TL_CONFIG']['avatar_anonymous_alt'],
+			$GLOBALS['TL_CONFIG']['avatar_anonymous_title'],
+			$GLOBALS['TL_CONFIG']['avatar_anonymous_class']
+		);
 	}
 }
 
