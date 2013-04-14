@@ -152,26 +152,38 @@ class AvatarWidget extends \Widget implements \uploadable
 			return;
 		}
 
+		$blnResize = false;
+
 		if (($arrImageSize = @getimagesize($file['tmp_name'])) != false)
 		{
 			// Image exceeds maximum image width
 			if ($arrImageSize[0] > $arrImage[0])
 			{
-				$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filewidth'], $file['name'], $arrImage[0]));
-				$this->log('File "'.$file['name'].'" exceeds the maximum image width of '.$GLOBALS['TL_CONFIG']['imageWidth'].' pixels', 'FormFileUpload validate()', TL_ERROR);
+				if ($GLOBALS['TL_CONFIG']['avatar_resize']) {
+					$blnResize = true;
+				}
+				else {
+					$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filewidth'], $file['name'], $arrImage[0]));
+					$this->log('File "'.$file['name'].'" exceeds the maximum image width of '.$GLOBALS['TL_CONFIG']['imageWidth'].' pixels', 'FormFileUpload validate()', TL_ERROR);
 
-				unset($_FILES[$this->strName]);
-				return;
+					unset($_FILES[$this->strName]);
+					return;
+				}
 			}
 
 			// Image exceeds maximum image height
 			if ($arrImageSize[1] > $arrImage[1])
 			{
-				$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['fileheight'], $file['name'], $arrImage[1]));
-				$this->log('File "'.$file['name'].'" exceeds the maximum image height of '.$GLOBALS['TL_CONFIG']['imageHeight'].' pixels', 'FormFileUpload validate()', TL_ERROR);
+				if ($GLOBALS['TL_CONFIG']['avatar_resize']) {
+					$blnResize = true;
+				}
+				else {
+					$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['fileheight'], $file['name'], $arrImage[1]));
+					$this->log('File "'.$file['name'].'" exceeds the maximum image height of '.$GLOBALS['TL_CONFIG']['imageHeight'].' pixels', 'FormFileUpload validate()', TL_ERROR);
 
-				unset($_FILES[$this->strName]);
-				return;
+					unset($_FILES[$this->strName]);
+					return;
+				}
 			}
 		}
 
@@ -231,6 +243,15 @@ class AvatarWidget extends \Widget implements \uploadable
 
 					$this->Files->move_uploaded_file($file['tmp_name'], $strUploadFolder . '/' . $file['name']);
 					$this->Files->chmod($strUploadFolder . '/' . $file['name'], $GLOBALS['TL_CONFIG']['defaultFileChmod']);
+
+					if ($blnResize) {
+						\Image::resize(
+							$strUploadFolder . '/' . $file['name'],
+							$arrImageSize[0],
+							$arrImageSize[1],
+							$arrImageSize[2]
+						);
+					}
 
 					$_SESSION['FILES'][$this->strName] = array
 					(

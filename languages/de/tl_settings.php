@@ -24,6 +24,11 @@ $GLOBALS['TL_LANG']['tl_settings']['avatar_maxdims'] = array
   "Maximale Abmessungen",
   "Auswahl der maximalen Breite und Höhe in Pixeln."
 );
+$GLOBALS['TL_LANG']['tl_settings']['avatar_resize'] = array
+(
+	'Bild beim Upload verkleinern',
+	'Größere Bilder beim Upload verkleinern, wenn das Bild die maximalen Abmessungen überschreitet.'
+);
 $GLOBALS['TL_LANG']['tl_settings']['avatar_filetype'] = array
 (
   "Erlaubte Upload-Dateitypen",

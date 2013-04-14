@@ -11,7 +11,7 @@
 /**
  * Add to palette
  */
-$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] .= ';{avatar_legend},avatar_dir,avatar_default,avatar_maxsize,avatar_filetype,avatar_maxdims';
+$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] .= ';{avatar_legend},avatar_dir,avatar_default,avatar_maxsize,avatar_filetype,avatar_maxdims,avatar_resize';
 
 /**
  * Add fields
@@ -29,7 +29,7 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['avatar_maxsize'] = array
 	'label'		  =>	&$GLOBALS['TL_LANG']['tl_settings']['avatar_maxsize'],
 	'exclude'	  =>	true,
 	'inputType'	=>	'text',
-	'eval'		  =>	array('rgxp'=>'digit', 'maxlength'=>6, 'mandatory'=>true, 'tl_class'=>'w50')
+	'eval'		  =>	array('rgxp'=>'digit', 'mandatory'=>true, 'tl_class'=>'w50')
 );
 
 $GLOBALS['TL_DCA']['tl_settings']['fields']['avatar_filetype'] = array
@@ -48,4 +48,12 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['avatar_maxdims'] = array
   'options'   => $GLOBALS['TL_CROP'],
   'reference' => &$GLOBALS['TL_LANG']['MSC'],
   'eval'      => array('rgxp'=>'digit', 'nospace'=>true, 'helpwizard'=>true, 'tl_class'=>'w50'),
+);
+
+$GLOBALS['TL_DCA']['tl_settings']['fields']['avatar_resize'] = array
+(
+	'label'		=>	&$GLOBALS['TL_LANG']['tl_settings']['avatar_resize'],
+	'exclude'	=>	true,
+	'inputType'	=>	'checkbox',
+	'eval'		=>	array('tl_class'=>'w50 m12')
 );
