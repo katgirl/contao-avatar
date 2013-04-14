@@ -28,15 +28,50 @@ class InsertTags extends \System
 	 */
 	public function replaceTags($strTag)
 	{
+		list($strTag, $strParams) = trimsplit('?', $strTag);
 		$arrTag = trimsplit('::', $strTag);
 
 		if ($arrTag[0] != 'avatar') {
 			return false;
 		}
 
+		$strParams = \String::decodeEntities($strParams);
+		$strParams = str_replace('[&]', '&', $strParams);
+		$arrParams = explode('&', $strParams);
+
 		//get_Settings
 		$arrDims = deserialize($GLOBALS['TL_CONFIG']['avatar_maxdims']);
 
+		$strAlt = false;
+		$strClass = 'avatar';
+
+		foreach ($arrParams as $strParam)
+		{
+			list($key, $value) = explode('=', $strParam);
+
+			switch ($key)
+			{
+				case 'width':
+					$arrDims[0] = $value;
+					break;
+
+				case 'height':
+					$arrDims[1] = $value;
+					break;
+
+				case 'alt':
+					$strAlt = specialchars($value);
+					break;
+
+				case 'class':
+					$strClass = $value;
+					break;
+
+				case 'mode':
+					$arrDims[2] = $value;
+					break;
+			}
+		}
 		if (!$arrTag[1]) {
 			if (!FE_USER_LOGGED_IN) {
 				return '<img src="' . TL_FILES_URL . \Image::get(
@@ -44,11 +79,11 @@ class InsertTags extends \System
 					$arrDims[0],
 					$arrDims[1],
 					$arrDims[2]
-				) . '" width="' . $arrDims[0] . '" height="' . $arrDims[1] . '" alt="Avatar" class="avatar">';
+				) . '" width="' . $arrDims[0] . '" height="' . $arrDims[1] . '" alt="Avatar" class="' . $strClass . '">';
 			}
 
 			$strAvatar = \FrontendUser::getInstance()->avatar;
-			$strAlt    = \FrontendUser::getInstance()->firstname . " " . \FrontendUser::getInstance()->lastname;
+			$strAlt    = $strAlt ? $strAlt : \FrontendUser::getInstance()->firstname . " " . \FrontendUser::getInstance()->lastname;
 
 			if ($strAvatar == '' && \FrontendUser::getInstance()->gender != '') {
 				return '<img src="' . TL_FILES_URL . \Image::get(
@@ -56,7 +91,7 @@ class InsertTags extends \System
 					$arrDims[0],
 					$arrDims[1],
 					$arrDims[2]
-				) . '" width="' . $arrDims[0] . '" height="' . $arrDims[1] . '" alt="Avatar" class="avatar">';
+				) . '" width="' . $arrDims[0] . '" height="' . $arrDims[1] . '" alt="' . ($strAlt ? $strAlt : 'Avatar') . '" class="' . $strClass . '">';
 			}
 		}
 		elseif (is_numeric($arrTag[1])) {
@@ -64,7 +99,7 @@ class InsertTags extends \System
 				->prepare("SELECT * FROM tl_member WHERE id=?")
 				->execute($arrTag[1]);
 			$strAvatar = $objUser->avatar;
-			$strAlt = $objUser->firstname . " " . $objUser->lastname;
+			$strAlt = $strAlt ? $strAlt :$objUser->firstname . " " . $objUser->lastname;
 		}
 
 		$objFile = \FilesModel::findByPk($strAvatar);
@@ -75,7 +110,7 @@ class InsertTags extends \System
 				$arrDims[0],
 				$arrDims[1],
 				$arrDims[2]
-			) . '" width="' . $arrDims[0] . '" height="' . $arrDims[1] . '" title="' . $strAlt . '" alt="' . $strAlt . '" class="avatar">';
+			) . '" width="' . $arrDims[0] . '" height="' . $arrDims[1] . '" title="' . $strAlt . '" alt="' . $strAlt . '" class="' . $strClass . '">';
 		}
 		else {
 			return '<img src="' . TL_FILES_URL . \Image::get(
