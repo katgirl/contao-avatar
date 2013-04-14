@@ -90,7 +90,7 @@ class InsertTags extends \System
 		$objMember = \MemberModel::findByPk($arrTag[1]);
 
 		// return anonymous avatar, if member not found
-		if (!$objMember->next()) {
+		if (!$objMember) {
 			return $this->generateAnonymousAvatar($arrDims);
 		}
 
@@ -145,7 +145,7 @@ class InsertTags extends \System
 			);
 
 			// read the new size to keep proportion
-			$objAvatar = new File($strAvatar);
+			$objAvatar = new \File($strAvatar);
 			$arrDims[0] = $objAvatar->width;
 			$arrDims[1] = $objAvatar->height;
 		}
