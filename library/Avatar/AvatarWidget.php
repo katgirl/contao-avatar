@@ -280,7 +280,7 @@ class AvatarWidget extends \Widget implements \uploadable
 					// Update Userdata
 					$this->value = \Database::getInstance()->prepare("SELECT id FROM tl_files WHERE hash=?")->execute( md5_file(TL_ROOT . '/' . $strFile) )->id;
 
-					$this->log('File "'.$file['name'].'" has been'. $db .' moved to "'.$strUploadFolder.'"', 'FormFileUpload validate()', TL_FILES);
+					$this->log('File "'.$file['name'].'" has been moved to "'.$strUploadFolder.'"', 'FormFileUpload validate()', TL_FILES);
 				}
 			}
 		}
