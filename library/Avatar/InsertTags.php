@@ -40,10 +40,10 @@ class InsertTags extends \System
 		$arrParams = explode('&', $strParams);
 
 		//get_Settings
-		$arrDims = deserialize($GLOBALS['TL_CONFIG']['avatar_maxdims']);
-
-		$strAlt = false;
-		$strClass = 'avatar';
+		$arrDims  = deserialize($GLOBALS['TL_CONFIG']['avatar_maxdims']);
+		$strAlt   = $GLOBALS['TL_CONFIG']['avatar_default_alt'];
+		$strTitle = $GLOBALS['TL_CONFIG']['avatar_default_title'];
+		$strClass = $GLOBALS['TL_CONFIG']['avatar_default_class'];
 
 		foreach ($arrParams as $strParam)
 		{
@@ -63,6 +63,10 @@ class InsertTags extends \System
 					$strAlt = specialchars($value);
 					break;
 
+				case 'title':
+					$strTitle = specialchars($value);
+					break;
+
 				case 'class':
 					$strClass = $value;
 					break;
@@ -74,16 +78,18 @@ class InsertTags extends \System
 		}
 		if (!$arrTag[1]) {
 			if (!FE_USER_LOGGED_IN) {
-				return '<img src="' . TL_FILES_URL . \Image::get(
-					"system/modules/avatar/assets/male.png",
-					$arrDims[0],
-					$arrDims[1],
-					$arrDims[2]
-				) . '" width="' . $arrDims[0] . '" height="' . $arrDims[1] . '" alt="Avatar" class="' . $strClass . '">';
+				return $this->generateAnonymousAvatar($arrDims);
+			}
+
+			$objMember = \MemberModel::findByPk(\FrontendUser::getInstance()->id);
+
+			if (!$objMember) {
+				return $this->generateAnonymousAvatar($arrDims);
 			}
 
 			$strAvatar = \FrontendUser::getInstance()->avatar;
-			$strAlt    = $strAlt ? $strAlt : \FrontendUser::getInstance()->firstname . " " . \FrontendUser::getInstance()->lastname;
+			$strAlt    = \String::parseSimpleTokens($strAlt, $objMember->row());
+			$strTitle  = \String::parseSimpleTokens($strTitle, $objMember->row());
 
 			if ($strAvatar == '' && \FrontendUser::getInstance()->gender != '') {
 				return '<img src="' . TL_FILES_URL . \Image::get(
@@ -91,35 +97,48 @@ class InsertTags extends \System
 					$arrDims[0],
 					$arrDims[1],
 					$arrDims[2]
-				) . '" width="' . $arrDims[0] . '" height="' . $arrDims[1] . '" alt="' . ($strAlt ? $strAlt : 'Avatar') . '" class="' . $strClass . '">';
+				) . '" width="' . $arrDims[0] . '" height="' . $arrDims[1] . '" alt="' . $strAlt . '" title="' . $strTitle . '" class="' . $strClass . '">';
 			}
 		}
 		elseif (is_numeric($arrTag[1])) {
 			$objUser = \Database::getInstance()
 				->prepare("SELECT * FROM tl_member WHERE id=?")
 				->execute($arrTag[1]);
+
+			if (!$objUser->next()) {
+				return $this->generateAnonymousAvatar($arrDims);
+			}
+
 			$strAvatar = $objUser->avatar;
-			$strAlt = $strAlt ? $strAlt :$objUser->firstname . " " . $objUser->lastname;
+			$strAlt    = \String::parseSimpleTokens($strAlt, $objUser->row());
+			$strTitle  = \String::parseSimpleTokens($strTitle, $objUser->row());
 		}
 
 		$objFile = \FilesModel::findByPk($strAvatar);
 
-		if ($objFile !== null) {
-			return '<img src="' . TL_FILES_URL . \Image::get(
-				$objFile->path,
-				$arrDims[0],
-				$arrDims[1],
-				$arrDims[2]
-			) . '" width="' . $arrDims[0] . '" height="' . $arrDims[1] . '" title="' . $strAlt . '" alt="' . $strAlt . '" class="' . $strClass . '">';
+		if ($objFile === null) {
+			$strAvatar = 'system/modules/avatar/assets/male.png';
 		}
 		else {
-			return '<img src="' . TL_FILES_URL . \Image::get(
-				"system/modules/avatar/assets/male.png",
-				$arrDims[0],
-				$arrDims[1],
-				$arrDims[2]
-			) . '" width="' . $arrDims[0] . '" height="' . $arrDims[1] . '" alt="Avatar" class="avatar">';
+			$strAvatar = $objFile->path;
 		}
+
+		return '<img src="' . TL_FILES_URL . \Image::get(
+			$strAvatar,
+			$arrDims[0],
+			$arrDims[1],
+			$arrDims[2]
+		) . '" width="' . $arrDims[0] . '" height="' . $arrDims[1] . '" alt="' . $strAlt . '" title="' . $strTitle . '" class="' . $strClass . '">';
+	}
+
+	protected function generateAnonymousAvatar($arrDims)
+	{
+		return '<img src="' . TL_FILES_URL . \Image::get(
+			"system/modules/avatar/assets/male.png",
+			$arrDims[0],
+			$arrDims[1],
+			$arrDims[2]
+		) . '" width="' . $arrDims[0] . '" height="' . $arrDims[1] . '" alt="' . $GLOBALS['TL_CONFIG']['avatar_anonymous_alt'] . '" title="' . $GLOBALS['TL_CONFIG']['avatar_anonymous_title'] . '" class="' . $GLOBALS['TL_CONFIG']['avatar_anonymous_class'] . '">';
 	}
 }
 

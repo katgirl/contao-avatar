@@ -34,3 +34,36 @@ $GLOBALS['TL_LANG']['tl_settings']['avatar_filetype'] = array
   "Erlaubte Upload-Dateitypen",
   "Hier können Sie eine kommagetrennte Liste von Dateitypen eingeben, die als Avatar hochgeladen werden dürfen."
 );
+
+$GLOBALS['TL_LANG']['tl_settings']['avatar_default_alt'] = array
+(
+  "Standard ALT-Text",
+  "Bitte geben Sie hier den ALT-Text ein, der Standardmäßig verwendet werden soll (Simple-Tokens sind erlaubt)."
+);
+$GLOBALS['TL_LANG']['tl_settings']['avatar_anonymous_alt'] = array
+(
+  "Anonymous ALT-Text",
+  "Bitte geben Sie hier den ALT-Text ein, der verwendet werden soll wenn keine Daten verfügbar sind."
+);
+
+$GLOBALS['TL_LANG']['tl_settings']['avatar_default_title'] = array
+(
+  "Standard Titel-Text",
+  "Bitte geben Sie hier den Titel-Text ein, der Standardmäßig verwendet werden soll (Simple-Tokens sind erlaubt)."
+);
+$GLOBALS['TL_LANG']['tl_settings']['avatar_anonymous_title'] = array
+(
+  "Anonymous Titel-Text",
+  "Bitte geben Sie hier den Titel-Text ein, der verwendet werden soll wenn keine Daten verfügbar sind."
+);
+
+$GLOBALS['TL_LANG']['tl_settings']['avatar_default_class'] = array
+(
+  "Standard CSS-Klasse",
+  "Bitte geben Sie hier den CSS-Klasse ein, der Standardmäßig verwendet werden soll (Simple-Tokens sind erlaubt)."
+);
+$GLOBALS['TL_LANG']['tl_settings']['avatar_anonymous_class'] = array
+(
+  "Anonymous CSS-Klasse",
+  "Bitte geben Sie hier den CSS-Klasse ein, der verwendet werden soll wenn keine Daten verfügbar sind."
+);
