@@ -295,8 +295,11 @@ class AvatarModule extends \Module
 			}
 
 			// Update Userdata
-			$avatar = \Database::getInstance()->prepare("SELECT id FROM tl_files WHERE hash=?")->execute( md5_file(TL_ROOT . '/' . $strFile) )->id;
-			\Database::getInstance()->prepare("UPDATE tl_member SET avatar=? WHERE id=?")->execute($avatar,$this->User->id);
+      $strFile = $strUploadFolder . '/' . $file['name'];
+			$objFile = \FilesModel::findByPath($strFile);
+      
+      // new Avatar for Member
+			\Database::getInstance()->prepare("UPDATE tl_member SET avatar=? WHERE id=?")->execute($objFile->id,$this->User->id);
 			
 			$this->log('File "'.$file['name'].'" has been moved to "'.$strUploadFolder.'"', 'FormFileUpload validate()', TL_FILES);
 		  }
