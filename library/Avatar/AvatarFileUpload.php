@@ -164,8 +164,11 @@ class AvatarFileUpload extends \Widget implements \uploadable
 				unset($arrNew);
 			}
 		}
+    
+    $arrImage  = deserialize($GLOBALS['TL_CONFIG']['avatar_maxdims']);
 
-		$return = '<input type="hidden" name="'.$this->strName.'" id="ctrl_'.$this->strId.'" value="'.$strValues.'">' . (($this->strOrderField != '') ? '
+		$return = '<img src="' . TL_FILES_URL . \Image::get($objFile->path, $arrImage[0], $arrImage[1], $arrImage[2]) . '" width="' . $arrImage[0] . '" height="' . $arrImage[1] . '" alt="' . $strAlt . '" class="avatar">
+  <input type="hidden" name="'.$this->strName.'" id="ctrl_'.$this->strId.'" value="'.$strValues.'">' . (($this->strOrderField != '') ? '
   <input type="hidden" name="'.$this->strOrderName.'" id="ctrl_'.$this->strOrderId.'" value="'.$this->{$this->strOrderField}.'">' : '') . '
   <div class="selector_container" id="target_'.$this->strId.'">' . (($this->strOrderField != '' && count($arrValues)) ? '
     <p id="hint_'.$this->strId.'" class="sort_hint">' . $GLOBALS['TL_LANG']['MSC']['dragItemsHint'] . '</p>' : '') . '
