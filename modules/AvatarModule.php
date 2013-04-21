@@ -8,7 +8,7 @@
  * @license    http://opensource.org/licenses/lgpl-3.0.html LGPL
  */
  
-namespace Avatar\Module; 
+namespace KirstenRoschanski\Avatar\Module; 
 
 /**
  * Class AvatarModule

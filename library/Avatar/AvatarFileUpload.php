@@ -9,7 +9,7 @@
  * @license    http://opensource.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Avatar\Widget;
+namespace KirstenRoschanski\Avatar\Widget;
 
 /**
  * Class AvatarWidget

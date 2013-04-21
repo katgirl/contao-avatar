@@ -2,9 +2,9 @@
 
 /**
  * Contao Open Source CMS
- * 
- * Copyright (C) 2005-2013 Leo Feyer
- * 
+ *
+ * Copyright (c) 2005-2013 Leo Feyer
+ *
  * @package Avatar
  * @link    https://contao.org
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
@@ -16,7 +16,7 @@
  */
 ClassLoader::addNamespaces(array
 (
-	'Avatar',
+	'KirstenRoschanski',
 ));
 
 
@@ -26,12 +26,12 @@ ClassLoader::addNamespaces(array
 ClassLoader::addClasses(array
 (
 	// Modules
-	'Avatar\Module\AvatarModule' 		=> 'system/modules/avatar/modules/AvatarModule.php',
+	'KirstenRoschanski\Avatar\Module\AvatarModule'     => 'system/modules/avatar/modules/AvatarModule.php',
 
 	// Library
-	'Avatar\InsertTags'          		=> 'system/modules/avatar/library/Avatar/InsertTags.php',
-	'Avatar\Widget\AvatarWidget' 		=> 'system/modules/avatar/library/Avatar/AvatarWidget.php',
-	'Avatar\Widget\AvatarFileUpload' 	=> 'system/modules/avatar/library/Avatar/AvatarFileUpload.php',
+	'KirstenRoschanski\Avatar\Widget\AvatarFileUpload' => 'system/modules/avatar/library/Avatar/AvatarFileUpload.php',
+	'KirstenRoschanski\Avatar\InsertTags'              => 'system/modules/avatar/library/Avatar/InsertTags.php',
+	'KirstenRoschanski\Avatar\Widget\AvatarWidget'     => 'system/modules/avatar/library/Avatar/AvatarWidget.php',
 ));
 
 
@@ -40,6 +40,6 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-	'form_avatar' => 'system/modules/avatar/templates',
 	'mod_avatar'  => 'system/modules/avatar/templates',
+	'form_avatar' => 'system/modules/avatar/templates',
 ));
