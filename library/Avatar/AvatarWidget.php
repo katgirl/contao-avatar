@@ -217,11 +217,20 @@ class AvatarWidget extends \Widget implements \uploadable
 				{
 					$this->import('Files');
 
+					if ($GLOBALS['TL_CONFIG']['avatar_rename']) {
+						$pathinfo = pathinfo($file['name']);
+						$user = \MemberModel::findByPk($this->User->id);
+			        	$targetName = standardize(\String::parseSimpleTokens($GLOBALS['TL_CONFIG']['avatar_name'], $user->row())) . '.' . $pathinfo['extension'];
+			        }
+					else {
+						$targetName = $file['name'];
+					}
+
 					// Do not overwrite existing files
-					if ($this->doNotOverwrite && file_exists(TL_ROOT . '/' . $strUploadFolder . '/' . $file['name']))
+					if ($this->doNotOverwrite && file_exists(TL_ROOT . '/' . $strUploadFolder . '/' . $targetName))
 					{
 						$offset = 1;
-						$pathinfo = pathinfo($file['name']);
+						$pathinfo = pathinfo($targetName);
 						$name = $pathinfo['filename'];
 
 						$arrAll = scan(TL_ROOT . '/' . $strUploadFolder);
@@ -238,15 +247,15 @@ class AvatarWidget extends \Widget implements \uploadable
 							}
 						}
 
-						$file['name'] = str_replace($name, $name . '__' . ++$offset, $file['name']);
+						$targetName = str_replace($name, $name . '__' . ++$offset, $targetName);
 					}
 
-					$this->Files->move_uploaded_file($file['tmp_name'], $strUploadFolder . '/' . $file['name']);
-					$this->Files->chmod($strUploadFolder . '/' . $file['name'], $GLOBALS['TL_CONFIG']['defaultFileChmod']);
+					$this->Files->move_uploaded_file($file['tmp_name'], $strUploadFolder . '/' . $targetName);
+					$this->Files->chmod($strUploadFolder . '/' . $targetName, $GLOBALS['TL_CONFIG']['defaultFileChmod']);
 
 					if ($blnResize) {
 						\Image::resize(
-							$strUploadFolder . '/' . $file['name'],
+							$strUploadFolder . '/' . $targetName,
 							$arrImageSize[0],
 							$arrImageSize[1],
 							$arrImageSize[2]
@@ -255,7 +264,7 @@ class AvatarWidget extends \Widget implements \uploadable
 
 					$_SESSION['FILES'][$this->strName] = array
 					(
-						'name' => $file['name'],
+						'name' => $targetName,
 						'type' => $file['type'],
 						'tmp_name' => TL_ROOT . '/' . $strUploadFolder . '/' . $file['name'],
 						'error' => $file['error'],
@@ -267,7 +276,7 @@ class AvatarWidget extends \Widget implements \uploadable
 
 					if ($GLOBALS['TL_DCA']['tl_files']['config']['databaseAssisted'])
 					{
-						$strFile = $strUploadFolder . '/' . $file['name'];
+						$strFile = $strUploadFolder . '/' . $targetName;
 						$objFile = \FilesModel::findByPath($strFile);
 
 						if ($objFile !== null)
@@ -301,7 +310,7 @@ class AvatarWidget extends \Widget implements \uploadable
 					// Update Userdata
 					$this->value = \Database::getInstance()->prepare("SELECT id FROM tl_files WHERE hash=?")->execute( md5_file(TL_ROOT . '/' . $strFile) )->id;
 
-					$this->log('File "'.$file['name'].'" has been moved to "'.$strUploadFolder.'"', 'FormFileUpload validate()', TL_FILES);
+					$this->log('File "'.$targetName.'" has been moved to "'.$strUploadFolder.'"', 'FormFileUpload validate()', TL_FILES);
 				}
 			}
 		}

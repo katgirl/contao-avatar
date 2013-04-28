@@ -11,11 +11,15 @@
 /**
  * Add to palette
  */
+$GLOBALS['TL_DCA']['tl_settings']['palettes']['__selector__'][] = 'avatar_rename';
 $GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] .= ';{avatar_legend},avatar_dir,avatar_default,' .
 	'avatar_maxsize,avatar_filetype,avatar_maxdims,avatar_resize,' .
+	'avatar_rename,' .
 	'avatar_default_alt,avatar_anonymous_alt,' .
 	'avatar_default_title,avatar_anonymous_title,' .
 	'avatar_default_class,avatar_anonymous_class';
+
+$GLOBALS['TL_DCA']['tl_settings']['subpalettes']['avatar_rename'] = 'avatar_name';
 
 /**
  * Add fields
@@ -62,12 +66,28 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['avatar_resize'] = array
 	'eval'		=>	array('tl_class'=>'w50 m12')
 );
 
+$GLOBALS['TL_DCA']['tl_settings']['fields']['avatar_rename'] = array
+(
+	'label'		=>	&$GLOBALS['TL_LANG']['tl_settings']['avatar_rename'],
+	'exclude'	=>	true,
+	'inputType'	=>	'checkbox',
+	'eval'		=>	array('tl_class'=>'clr w50 m12', 'submitOnChange'=>true)
+);
+
+$GLOBALS['TL_DCA']['tl_settings']['fields']['avatar_name'] = array
+(
+	'label'		=>	&$GLOBALS['TL_LANG']['tl_settings']['avatar_name'],
+	'exclude'	=>	true,
+	'inputType'	=>	'text',
+	'eval'		=>	array('tl_class'=>'w50', 'mandatory' => true, 'allowHtml' => true, 'preserveTags' => true)
+);
+
 $GLOBALS['TL_DCA']['tl_settings']['fields']['avatar_default_alt'] = array
 (
 	'label'		=>	&$GLOBALS['TL_LANG']['tl_settings']['avatar_default_alt'],
 	'exclude'	=>	true,
 	'inputType'	=>	'text',
-	'eval'		=>	array('tl_class'=>'w50', 'allowHtml' => true, 'preserveTags' => true)
+	'eval'		=>	array('tl_class'=>'clr w50', 'allowHtml' => true, 'preserveTags' => true)
 );
 
 $GLOBALS['TL_DCA']['tl_settings']['fields']['avatar_anonymous_alt'] = array

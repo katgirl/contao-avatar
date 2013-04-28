@@ -12,6 +12,7 @@
  * Presettings
  */
 $GLOBALS['TL_CONFIG']['avatar_dir']             = '';
+$GLOBALS['TL_CONFIG']['avatar_name']            = 'avatar_##id##_##firstname##_##lastname##';
 $GLOBALS['TL_CONFIG']['avatar_default_alt']     = '##firstname## ##lastname##';
 $GLOBALS['TL_CONFIG']['avatar_anonymous_alt']   = 'Avatar';
 $GLOBALS['TL_CONFIG']['avatar_default_title']   = '##firstname## ##lastname##';
@@ -47,3 +48,10 @@ $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array
   'replaceTags'
 );
 
+
+/**
+ * Maintenance
+ */
+if ($GLOBALS['TL_CONFIG']['avatar_rename']) {
+	$GLOBALS['TL_MAINTENANCE']['avatar'] = 'Avatar\RenameAvatars';
+}

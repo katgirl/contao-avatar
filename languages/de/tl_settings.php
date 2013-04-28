@@ -29,6 +29,16 @@ $GLOBALS['TL_LANG']['tl_settings']['avatar_resize'] = array
 	'Bild beim Upload verkleinern',
 	'Größere Bilder beim Upload verkleinern, wenn das Bild die maximalen Abmessungen überschreitet.'
 );
+$GLOBALS['TL_LANG']['tl_settings']['avatar_rename'] = array
+(
+	'Datei umbenennen',
+	'Ändert den Dateinamen des hochgeladenen Avatars.'
+);
+$GLOBALS['TL_LANG']['tl_settings']['avatar_name'] = array
+(
+	'Dateiname',
+	'Bitte geben Sie hier den neuen Dateinamen ein (Simple-Tokens sind erlaubt).'
+);
 $GLOBALS['TL_LANG']['tl_settings']['avatar_filetype'] = array
 (
   "Erlaubte Upload-Dateitypen",
