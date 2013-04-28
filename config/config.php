@@ -24,29 +24,25 @@ $GLOBALS['TL_CONFIG']['avatar_anonymous_class'] = 'avatar avatar-anonymous';
 /**
  * Back end form fields
  */
-$GLOBALS['BE_FFL']['avatar'] = 'KirstenRoschanski\Avatar\Widget\AvatarFileUpload';
+$GLOBALS['BE_FFL']['avatar'] = 'Avatar\Widget\AvatarFileUpload';
 
 
 /**
  * FRONT end form fields
  */
-$GLOBALS['TL_FFL']['avatar'] = 'KirstenRoschanski\Avatar\Widget\AvatarWidget';
+$GLOBALS['TL_FFL']['avatar'] = 'Avatar\Widget\AvatarWidget';
 
 
 /**
  * Front end modules
  */
-$GLOBALS['FE_MOD']['user']['avatar'] = 'KirstenRoschanski\Avatar\Module\AvatarModule';
+$GLOBALS['FE_MOD']['user']['avatar'] = 'Avatar\Module\AvatarModule';
 
 
 /**
  * Register hooks
  */
-$GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array
-(
-	'KirstenRoschanski\Avatar\InsertTags',
-	'replaceTags'
-);
+$GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('Avatar\InsertTags', 'replaceTags');
 
 
 /**
