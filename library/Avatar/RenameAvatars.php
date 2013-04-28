@@ -68,6 +68,8 @@ class RenameAvatars extends \Backend implements \executable
 			/** @var \MemberModel $member */
 			$member = \MemberModel::findBy(array('avatar!=?'), '');
 
+			$count = 0;
+
 			while ($member->next()) {
 				$avatarRecord = \FilesModel::findByPk($member->avatar);
 				if ($avatarRecord) {
@@ -86,14 +88,19 @@ class RenameAvatars extends \Backend implements \executable
 
 				if ($pathinfo['filename'] != $newName) {
 					$newPath = $uploadDir . '/' . $newName . '.' . $pathinfo['extension'];
+					$n = 1;
+					while (file_exists(TL_ROOT . '/' . $newPath)) {
+						$newPath = $uploadDir . '/' . $newName . '__' . $n++ . '.' . $pathinfo['extension'];
+					}
 					$files->rename($avatar, $newPath);
 					$avatarRecord->path = $newPath;
 					$avatarRecord->name = $newName;
 					$avatarRecord->save();
+					$count ++;
 				}
 			}
 
-			$_SESSION['RENAME_AVATARS_CONFIRM'] = $GLOBALS['TL_LANG']['tl_maintenance']['avatarsRenamed'];
+			$_SESSION['RENAME_AVATARS_CONFIRM'] = sprintf($GLOBALS['TL_LANG']['tl_maintenance']['avatarsRenamed'], $count);
 			$this->reload();
 		}
 
