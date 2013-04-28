@@ -4,6 +4,7 @@
  * Avatar for Contao Open Source CMS
  *
  * Copyright (C) 2013 Kirsten Roschanski
+ * Copyright (C) 2013 Tristan Lins <http://bit3.de>
  *
  * @package    Avatar
  * @license    http://opensource.org/licenses/lgpl-3.0.html LGPL
@@ -15,7 +16,9 @@ namespace KirstenRoschanski\Avatar;
  * Class InsertTags
  *
  * @copyright  Kirsten Roschanski (C) 2013
+ * @copyright  Tristan Lins (C) 2013
  * @author     Kirsten Roschanski <kirsten@kat-webdesign.de>
+ * @author     Tristan Lins <tristan.lins@bit3.de>
  */
 class InsertTags extends \System
 {
@@ -45,12 +48,10 @@ class InsertTags extends \System
 		$strParams = \String::decodeEntities($strParams);
 		$strParams = str_replace('[&]', '&', $strParams);
 		$arrParams = explode('&', $strParams);
-		foreach ($arrParams as $strParam)
-		{
+		foreach ($arrParams as $strParam) {
 			list($key, $value) = explode('=', $strParam);
 
-			switch ($key)
-			{
+			switch ($key) {
 				case 'width':
 					$arrDims[0] = $value;
 					break;
@@ -98,12 +99,19 @@ class InsertTags extends \System
 		$strAvatar = $objMember->avatar;
 
 		// parse the alt and title text
-		$strAlt    = \String::parseSimpleTokens($strAlt, $objMember->row());
-		$strTitle  = \String::parseSimpleTokens($strTitle, $objMember->row());
+		$strAlt   = \String::parseSimpleTokens($strAlt, $objMember->row());
+		$strTitle = \String::parseSimpleTokens($strTitle, $objMember->row());
 
 		// avatar available and file exists
 		if ($strAvatar &&
 			($objFile = \FilesModel::findByPk($strAvatar)) &&
+			file_exists(TL_ROOT . '/' . $objFile->path)
+		) {
+			$strAvatar = $objFile->path;
+		}
+
+		else if ($GLOBALS['TL_CONFIG']['avatar_fallback_image'] &&
+			($objFile = \FilesModel::findByPk($GLOBALS['TL_CONFIG']['avatar_fallback_image'])) &&
 			file_exists(TL_ROOT . '/' . $objFile->path)
 		) {
 			$strAvatar = $objFile->path;
@@ -145,7 +153,7 @@ class InsertTags extends \System
 			);
 
 			// read the new size to keep proportion
-			$objAvatar = new \File($strAvatar);
+			$objAvatar  = new \File($strAvatar);
 			$arrDims[0] = $objAvatar->width;
 			$arrDims[1] = $objAvatar->height;
 		}
@@ -153,7 +161,14 @@ class InsertTags extends \System
 
 	protected function generateAnonymousAvatar($arrDims)
 	{
-		$strAvatar = 'system/modules/avatar/assets/male.png';
+		if ($GLOBALS['TL_CONFIG']['avatar_fallback_image'] &&
+			($objFile = \FilesModel::findByPk($GLOBALS['TL_CONFIG']['avatar_fallback_image']))
+		) {
+			$strAvatar = $objFile->path;
+		}
+		else {
+			$strAvatar = 'system/modules/avatar/assets/male.png';
+		}
 
 		$this->resize($strAvatar, $arrDims);
 
