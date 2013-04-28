@@ -44,8 +44,8 @@ $GLOBALS['FE_MOD']['user']['avatar'] = 'KirstenRoschanski\Avatar\Module\AvatarMo
  */
 $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array
 (
-  'KirstenRoschanski\Avatar\InsertTags',
-  'replaceTags'
+	'KirstenRoschanski\Avatar\InsertTags',
+	'replaceTags'
 );
 
 

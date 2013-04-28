@@ -11,10 +11,10 @@
 /**
  * Add palette
  */
-$GLOBALS['TL_DCA']['tl_member']['palettes']['default'] = 
+$GLOBALS['TL_DCA']['tl_member']['palettes']['default'] =
 	str_replace(
-		';{account_legend},disable,start,stop', 
-		';{avatar_legend:hide},avatar;{account_legend},disable,start,stop', 
+		';{account_legend},disable,start,stop',
+		';{avatar_legend:hide},avatar;{account_legend},disable,start,stop',
 		$GLOBALS['TL_DCA']['tl_member']['palettes']['default']
 	);
 
@@ -23,18 +23,18 @@ $GLOBALS['TL_DCA']['tl_member']['palettes']['default'] =
  */
 $GLOBALS['TL_DCA']['tl_member']['fields']['avatar'] = array
 (
-  'label'        => &$GLOBALS['TL_LANG']['tl_member']['avatar'],
-  'exclude'      => true,
-  'inputType'    => 'avatar',
-  'eval'         => array(
-	  'fieldType'=>'radio',
-	  'files'=>true,
-	  'tl_class'=>'clr',
-	  'filename'=>'member_%s',
-	  'feViewable'=>true,
-	  'feEditable'=>true,
-	  'feGroup'=>'personal',
-	  'doNotOverwrite'=>!$GLOBALS['TL_CONFIG']['avatar_rename']
-  ),
-  'sql'          => "varchar(255) NOT NULL default ''"
+	'label'     => &$GLOBALS['TL_LANG']['tl_member']['avatar'],
+	'exclude'   => true,
+	'inputType' => 'avatar',
+	'eval'      => array(
+		'fieldType'      => 'radio',
+		'files'          => true,
+		'tl_class'       => 'clr',
+		'filename'       => 'member_%s',
+		'feViewable'     => true,
+		'feEditable'     => true,
+		'feGroup'        => 'personal',
+		'doNotOverwrite' => !$GLOBALS['TL_CONFIG']['avatar_rename']
+	),
+	'sql'       => "varchar(255) NOT NULL default ''"
 );

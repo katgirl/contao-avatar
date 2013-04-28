@@ -45,12 +45,10 @@ class InsertTags extends \System
 		$strParams = \String::decodeEntities($strParams);
 		$strParams = str_replace('[&]', '&', $strParams);
 		$arrParams = explode('&', $strParams);
-		foreach ($arrParams as $strParam)
-		{
+		foreach ($arrParams as $strParam) {
 			list($key, $value) = explode('=', $strParam);
 
-			switch ($key)
-			{
+			switch ($key) {
 				case 'width':
 					$arrDims[0] = $value;
 					break;
@@ -98,8 +96,8 @@ class InsertTags extends \System
 		$strAvatar = $objMember->avatar;
 
 		// parse the alt and title text
-		$strAlt    = \String::parseSimpleTokens($strAlt, $objMember->row());
-		$strTitle  = \String::parseSimpleTokens($strTitle, $objMember->row());
+		$strAlt   = \String::parseSimpleTokens($strAlt, $objMember->row());
+		$strTitle = \String::parseSimpleTokens($strTitle, $objMember->row());
 
 		// avatar available and file exists
 		if ($strAvatar &&
@@ -145,7 +143,7 @@ class InsertTags extends \System
 			);
 
 			// read the new size to keep proportion
-			$objAvatar = new \File($strAvatar);
+			$objAvatar  = new \File($strAvatar);
 			$arrDims[0] = $objAvatar->width;
 			$arrDims[1] = $objAvatar->height;
 		}

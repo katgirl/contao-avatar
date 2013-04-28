@@ -8,59 +8,59 @@
  * @package    Avatar
  * @license    http://opensource.org/licenses/lgpl-3.0.html LGPL
  */
- 
-namespace KirstenRoschanski\Avatar\Widget; 
+
+namespace KirstenRoschanski\Avatar\Widget;
 
 /**
  * Class AvatarWidget
  *
  * Widget for members avatar.
+ *
  * @copyright  Kirsten Roschanski (C) 2013
  * @author     Kirsten Roschanski <kirsten@kat-webdesign.de>
  */
 class AvatarWidget extends \Widget implements \uploadable
 {
-  
-   /**
-    * Template
-    * @var string
-    */
+
+	/**
+	 * Template
+	 *
+	 * @var string
+	 */
 	protected $strTemplate = 'form_avatar';
-	
+
 	/**
 	 * Submit user input
+	 *
 	 * @var boolean
 	 */
 	protected $blnSubmitInput = true;
-	
+
 	/**
 	 * Add specific attributes
+	 *
 	 * @param string
 	 * @param mixed
 	 */
 	public function __set($strKey, $varValue)
 	{
-		switch ($strKey)
-		{
+		switch ($strKey) {
 			case 'maxlength':
 				$this->arrConfiguration['maxlength'] = $varValue;
 				break;
 
 			case 'mandatory':
-				if ($varValue)
-				{
+				if ($varValue) {
 					$this->arrAttributes['required'] = 'required';
 				}
-				else
-				{
+				else {
 					unset($this->arrAttributes['required']);
 				}
 				parent::__set($strKey, $varValue);
 				break;
 
 			case 'fSize':
-				if ($varValue > 0)
-				{
+				if ($varValue > 0) {
 					$this->arrAttributes['size'] = $varValue;
 				}
 				break;
@@ -69,7 +69,7 @@ class AvatarWidget extends \Widget implements \uploadable
 				parent::__set($strKey, $varValue);
 				break;
 		}
-	}  
+	}
 
 
 	/**
@@ -77,26 +77,22 @@ class AvatarWidget extends \Widget implements \uploadable
 	 */
 	public function validate()
 	{
-		$this->maxlength  = $GLOBALS['TL_CONFIG']['avatar_maxsize'];
-		$this->extensions = $GLOBALS['TL_CONFIG']['avatar_filetype'];
-		$this->uploadFolder  = $GLOBALS['TL_CONFIG']['avatar_dir'];
-		$this->storeFile  = $this->uploadFolder != '' ? true : false;
+		$this->maxlength    = $GLOBALS['TL_CONFIG']['avatar_maxsize'];
+		$this->extensions   = $GLOBALS['TL_CONFIG']['avatar_filetype'];
+		$this->uploadFolder = $GLOBALS['TL_CONFIG']['avatar_dir'];
+		$this->storeFile    = $this->uploadFolder != '' ? true : false;
 
-		$arrImage  = deserialize($GLOBALS['TL_CONFIG']['avatar_maxdims']);
-		
-		$this->import('FrontendUser', 'User');		
-		
+		$arrImage = deserialize($GLOBALS['TL_CONFIG']['avatar_maxdims']);
+
+		$this->import('FrontendUser', 'User');
+
 		// No file specified
-		if (!isset($_FILES[$this->strName]) || empty($_FILES[$this->strName]['name']))
-		{
-			if ($this->mandatory)
-			{
-				if ($this->strLabel == '')
-				{
+		if (!isset($_FILES[$this->strName]) || empty($_FILES[$this->strName]['name'])) {
+			if ($this->mandatory) {
+				if ($this->strLabel == '') {
 					$this->addError($GLOBALS['TL_LANG']['ERR']['mdtryNoLabel']);
 				}
-				else
-				{
+				else {
 					$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['mandatory'], $this->strLabel));
 				}
 			}
@@ -104,25 +100,30 @@ class AvatarWidget extends \Widget implements \uploadable
 			return;
 		}
 
-		$file = $_FILES[$this->strName];
+		$file         = $_FILES[$this->strName];
 		$maxlength_kb = $this->getReadableSize($this->maxlength);
 
 		// Romanize the filename
 		$file['name'] = utf8_romanize($file['name']);
 
 		// File was not uploaded
-		if (!is_uploaded_file($file['tmp_name']))
-		{
-			if (in_array($file['error'], array(1, 2)))
-			{
+		if (!is_uploaded_file($file['tmp_name'])) {
+			if (in_array($file['error'], array(1, 2))) {
 				$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filesize'], $maxlength_kb));
-				$this->log('File "'.$file['name'].'" exceeds the maximum file size of '.$maxlength_kb, 'FormFileUpload validate()', TL_ERROR);
+				$this->log(
+					'File "' . $file['name'] . '" exceeds the maximum file size of ' . $maxlength_kb,
+					'FormFileUpload validate()',
+					TL_ERROR
+				);
 			}
 
-			if ($file['error'] == 3)
-			{
+			if ($file['error'] == 3) {
 				$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filepartial'], $file['name']));
-				$this->log('File "'.$file['name'].'" was only partially uploaded', 'FormFileUpload validate()', TL_ERROR);
+				$this->log(
+					'File "' . $file['name'] . '" was only partially uploaded',
+					'FormFileUpload validate()',
+					TL_ERROR
+				);
 			}
 
 			unset($_FILES[$this->strName]);
@@ -130,23 +131,29 @@ class AvatarWidget extends \Widget implements \uploadable
 		}
 
 		// File is too big
-		if ($this->maxlength > 0 && $file['size'] > $this->maxlength)
-		{
+		if ($this->maxlength > 0 && $file['size'] > $this->maxlength) {
 			$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filesize'], $maxlength_kb));
-			$this->log('File "'.$file['name'].'" exceeds the maximum file size of '.$maxlength_kb, 'FormFileUpload validate()', TL_ERROR);
+			$this->log(
+				'File "' . $file['name'] . '" exceeds the maximum file size of ' . $maxlength_kb,
+				'FormFileUpload validate()',
+				TL_ERROR
+			);
 
 			unset($_FILES[$this->strName]);
 			return;
 		}
 
 		$strExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
-		$uploadTypes = trimsplit(',', $this->extensions);
+		$uploadTypes  = trimsplit(',', $this->extensions);
 
 		// File type is not allowed
-		if (!in_array(strtolower($strExtension), $uploadTypes))
-		{
+		if (!in_array(strtolower($strExtension), $uploadTypes)) {
 			$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $strExtension));
-			$this->log('File type "'.$strExtension.'" is not allowed to be uploaded ('.$file['name'].')', 'FormFileUpload validate()', TL_ERROR);
+			$this->log(
+				'File type "' . $strExtension . '" is not allowed to be uploaded (' . $file['name'] . ')',
+				'FormFileUpload validate()',
+				TL_ERROR
+			);
 
 			unset($_FILES[$this->strName]);
 			return;
@@ -154,17 +161,19 @@ class AvatarWidget extends \Widget implements \uploadable
 
 		$blnResize = false;
 
-		if (($arrImageSize = @getimagesize($file['tmp_name'])) != false)
-		{
+		if (($arrImageSize = @getimagesize($file['tmp_name'])) != false) {
 			// Image exceeds maximum image width
-			if ($arrImageSize[0] > $arrImage[0])
-			{
+			if ($arrImageSize[0] > $arrImage[0]) {
 				if ($GLOBALS['TL_CONFIG']['avatar_resize']) {
 					$blnResize = true;
 				}
 				else {
 					$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filewidth'], $file['name'], $arrImage[0]));
-					$this->log('File "'.$file['name'].'" exceeds the maximum image width of '.$GLOBALS['TL_CONFIG']['imageWidth'].' pixels', 'FormFileUpload validate()', TL_ERROR);
+					$this->log(
+						'File "' . $file['name'] . '" exceeds the maximum image width of ' . $GLOBALS['TL_CONFIG']['imageWidth'] . ' pixels',
+						'FormFileUpload validate()',
+						TL_ERROR
+					);
 
 					unset($_FILES[$this->strName]);
 					return;
@@ -172,14 +181,17 @@ class AvatarWidget extends \Widget implements \uploadable
 			}
 
 			// Image exceeds maximum image height
-			if ($arrImageSize[1] > $arrImage[1])
-			{
+			if ($arrImageSize[1] > $arrImage[1]) {
 				if ($GLOBALS['TL_CONFIG']['avatar_resize']) {
 					$blnResize = true;
 				}
 				else {
 					$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['fileheight'], $file['name'], $arrImage[1]));
-					$this->log('File "'.$file['name'].'" exceeds the maximum image height of '.$GLOBALS['TL_CONFIG']['imageHeight'].' pixels', 'FormFileUpload validate()', TL_ERROR);
+					$this->log(
+						'File "' . $file['name'] . '" exceeds the maximum image height of ' . $GLOBALS['TL_CONFIG']['imageHeight'] . ' pixels',
+						'FormFileUpload validate()',
+						TL_ERROR
+					);
 
 					unset($_FILES[$this->strName]);
 					return;
@@ -188,59 +200,56 @@ class AvatarWidget extends \Widget implements \uploadable
 		}
 
 		// Store file in the session and optionally on the server
-		if (!$this->hasErrors())
-		{
+		if (!$this->hasErrors()) {
 			$_SESSION['FILES'][$this->strName] = $_FILES[$this->strName];
-			$this->log('File "'.$file['name'].'" uploaded successfully', 'FormFileUpload validate()', TL_FILES);
+			$this->log('File "' . $file['name'] . '" uploaded successfully', 'FormFileUpload validate()', TL_FILES);
 
-			if ($this->storeFile)
-			{
+			if ($this->storeFile) {
 				$intUploadFolder = $this->uploadFolder;
 
-				if ($this->User->assignDir && $this->User->homeDir)
-				{
+				if ($this->User->assignDir && $this->User->homeDir) {
 					$intUploadFolder = $this->User->homeDir;
 				}
 
 				$objUploadFolder = \FilesModel::findByPk($intUploadFolder);
 
 				// The upload folder could not be found
-				if ($objUploadFolder === null)
-				{
+				if ($objUploadFolder === null) {
 					throw new \Exception("Invalid upload folder ID $intUploadFolder");
 				}
 
 				$strUploadFolder = $objUploadFolder->path;
 
 				// Store the file if the upload folder exists
-				if ($strUploadFolder != '' && is_dir(TL_ROOT . '/' . $strUploadFolder))
-				{
+				if ($strUploadFolder != '' && is_dir(TL_ROOT . '/' . $strUploadFolder)) {
 					$this->import('Files');
 
 					if ($GLOBALS['TL_CONFIG']['avatar_rename']) {
-						$pathinfo = pathinfo($file['name']);
-						$user = \MemberModel::findByPk($this->User->id);
-			        	$targetName = standardize(\String::parseSimpleTokens($GLOBALS['TL_CONFIG']['avatar_name'], $user->row())) . '.' . $pathinfo['extension'];
-			        }
+						$pathinfo   = pathinfo($file['name']);
+						$user       = \MemberModel::findByPk($this->User->id);
+						$targetName = standardize(
+							\String::parseSimpleTokens($GLOBALS['TL_CONFIG']['avatar_name'], $user->row())
+						) . '.' . $pathinfo['extension'];
+					}
 					else {
 						$targetName = $file['name'];
 					}
 
 					// Do not overwrite existing files
-					if ($this->doNotOverwrite && file_exists(TL_ROOT . '/' . $strUploadFolder . '/' . $targetName))
-					{
-						$offset = 1;
+					if ($this->doNotOverwrite && file_exists(TL_ROOT . '/' . $strUploadFolder . '/' . $targetName)) {
+						$offset   = 1;
 						$pathinfo = pathinfo($targetName);
-						$name = $pathinfo['filename'];
+						$name     = $pathinfo['filename'];
 
-						$arrAll = scan(TL_ROOT . '/' . $strUploadFolder);
-						$arrFiles = preg_grep('/^' . preg_quote($name, '/') . '.*\.' . preg_quote($pathinfo['extension'], '/') . '/', $arrAll);
+						$arrAll   = scan(TL_ROOT . '/' . $strUploadFolder);
+						$arrFiles = preg_grep(
+							'/^' . preg_quote($name, '/') . '.*\.' . preg_quote($pathinfo['extension'], '/') . '/',
+							$arrAll
+						);
 
-						foreach ($arrFiles as $strFile)
-						{
-							if (preg_match('/__[0-9]+\.' . preg_quote($pathinfo['extension'], '/') . '$/', $strFile))
-							{
-								$strFile = str_replace('.' . $pathinfo['extension'], '', $strFile);
+						foreach ($arrFiles as $strFile) {
+							if (preg_match('/__[0-9]+\.' . preg_quote($pathinfo['extension'], '/') . '$/', $strFile)) {
+								$strFile  = str_replace('.' . $pathinfo['extension'], '', $strFile);
 								$intValue = intval(substr($strFile, (strrpos($strFile, '_') + 1)));
 
 								$offset = max($offset, $intValue);
@@ -251,7 +260,10 @@ class AvatarWidget extends \Widget implements \uploadable
 					}
 
 					$this->Files->move_uploaded_file($file['tmp_name'], $strUploadFolder . '/' . $targetName);
-					$this->Files->chmod($strUploadFolder . '/' . $targetName, $GLOBALS['TL_CONFIG']['defaultFileChmod']);
+					$this->Files->chmod(
+						$strUploadFolder . '/' . $targetName,
+						$GLOBALS['TL_CONFIG']['defaultFileChmod']
+					);
 
 					if ($blnResize) {
 						\Image::resize(
@@ -264,33 +276,30 @@ class AvatarWidget extends \Widget implements \uploadable
 
 					$_SESSION['FILES'][$this->strName] = array
 					(
-						'name' => $targetName,
-						'type' => $file['type'],
+						'name'     => $targetName,
+						'type'     => $file['type'],
 						'tmp_name' => TL_ROOT . '/' . $strUploadFolder . '/' . $file['name'],
-						'error' => $file['error'],
-						'size' => $file['size'],
+						'error'    => $file['error'],
+						'size'     => $file['size'],
 						'uploaded' => true
 					);
 
 					$this->loadDataContainer('tl_files');
 
-					if ($GLOBALS['TL_DCA']['tl_files']['config']['databaseAssisted'])
-					{
+					if ($GLOBALS['TL_DCA']['tl_files']['config']['databaseAssisted']) {
 						$strFile = $strUploadFolder . '/' . $targetName;
 						$objFile = \FilesModel::findByPath($strFile);
 
-						if ($objFile !== null)
-						{
+						if ($objFile !== null) {
 							$objFile->tstamp = time();
 							$objFile->path   = $strFile;
 							$objFile->hash   = md5_file(TL_ROOT . '/' . $strFile);
 							$objFile->save();
 						}
-						else
-						{
+						else {
 							$objFile = new \File($strFile, true);
 
-							$objNew = new \FilesModel();
+							$objNew            = new \FilesModel();
 							$objNew->pid       = $objUploadFolder->id;
 							$objNew->tstamp    = time();
 							$objNew->type      = 'file';
@@ -302,25 +311,32 @@ class AvatarWidget extends \Widget implements \uploadable
 						}
 
 						// Update the hash of the target folder
-						$objFolder = new \Folder($strUploadFolder);
+						$objFolder             = new \Folder($strUploadFolder);
 						$objUploadFolder->hash = $objFolder->hash;
 						$objUploadFolder->save();
 					}
-					
-					// Update Userdata
-					$this->value = \Database::getInstance()->prepare("SELECT id FROM tl_files WHERE hash=?")->execute( md5_file(TL_ROOT . '/' . $strFile) )->id;
 
-					$this->log('File "'.$targetName.'" has been moved to "'.$strUploadFolder.'"', 'FormFileUpload validate()', TL_FILES);
+					// Update Userdata
+					$this->value = \Database::getInstance()
+						->prepare("SELECT id FROM tl_files WHERE hash=?")
+						->execute(md5_file(TL_ROOT . '/' . $strFile))->id;
+
+					$this->log(
+						'File "' . $targetName . '" has been moved to "' . $strUploadFolder . '"',
+						'FormFileUpload validate()',
+						TL_FILES
+					);
 				}
 			}
 		}
-			
+
 		unset($_FILES[$this->strName]);
 	}
 
 
 	/**
 	 * Generate the widget and return it as string
+	 *
 	 * @return string
 	 */
 	public function generate()
@@ -330,35 +346,57 @@ class AvatarWidget extends \Widget implements \uploadable
 		$this->maxlength  = $GLOBALS['TL_CONFIG']['avatar_maxsize'];
 		$this->extensions = $GLOBALS['TL_CONFIG']['avatar_filetype'];
 		$arrImage         = deserialize($GLOBALS['TL_CONFIG']['avatar_maxdims']);
-		
+
 		$this->import('FrontendUser', 'User');
 
 		$strAvatar = $this->User->avatar;
 		$strAlt    = $this->User->firstname . " " . $this->User->lastname;
-		
-		$objFile = \FilesModel::findByPk($strAvatar);
+
+		$objFile  = \FilesModel::findByPk($strAvatar);
 		$template = '';
-		
-		if ( $objFile !== null )     
-		  $template .= '<img src="' . TL_FILES_URL . \Image::get($objFile->path, $arrImage[0], $arrImage[1], $arrImage[2]) . '" width="' . $arrImage[0] . '" height="' . $arrImage[1] . '" alt="' . $strAlt . '" class="avatar">';
-		elseif ( $this->User->gender != '' )
-		  $template .= '<img src="' . TL_FILES_URL . \Image::get("system/modules/avatar/assets/" . $this->User->gender . ".png", $arrImage[0], $arrImage[1], $arrImage[2]) . '" width="' . $arrImage[0] . '" height="' . $arrImage[1] . '" alt="Avatar" class="avatar">';       
-		else
-		  $template .= '<img src="' . TL_FILES_URL . \Image::get("system/modules/avatar/assets/male.png", $arrImage[0], $arrImage[1], $arrImage[2]) . '" width="' . $arrImage[0] . '" height="' . $arrImage[1] . '" alt="Avatar" class="avatar">';       
-	 
-		$template .= sprintf('<input type="file" name="%s" id="ctrl_%s" class="upload%s"%s%s',
-								$this->strName,
-								$this->strId,
-								(strlen($this->strClass) ? ' ' . $this->strClass : ''),
-								$this->getAttributes(),
-								$this->strTagEnding);
-						
-		$template .= sprintf($GLOBALS['TL_LANG']['AVATAR']['file']['1'],
-							  $this->extensions,
-							  $this->maxlength,
-							  $arrImage[0],
-							  $arrImage[1]); 
-		
+
+		if ($objFile !== null) {
+			$template .= '<img src="' . TL_FILES_URL . \Image::get(
+				$objFile->path,
+				$arrImage[0],
+				$arrImage[1],
+				$arrImage[2]
+			) . '" width="' . $arrImage[0] . '" height="' . $arrImage[1] . '" alt="' . $strAlt . '" class="avatar">';
+		}
+		elseif ($this->User->gender != '') {
+			$template .= '<img src="' . TL_FILES_URL . \Image::get(
+				"system/modules/avatar/assets/" . $this->User->gender . ".png",
+				$arrImage[0],
+				$arrImage[1],
+				$arrImage[2]
+			) . '" width="' . $arrImage[0] . '" height="' . $arrImage[1] . '" alt="Avatar" class="avatar">';
+		}
+		else {
+			$template .= '<img src="' . TL_FILES_URL . \Image::get(
+				"system/modules/avatar/assets/male.png",
+				$arrImage[0],
+				$arrImage[1],
+				$arrImage[2]
+			) . '" width="' . $arrImage[0] . '" height="' . $arrImage[1] . '" alt="Avatar" class="avatar">';
+		}
+
+		$template .= sprintf(
+			'<input type="file" name="%s" id="ctrl_%s" class="upload%s"%s%s',
+			$this->strName,
+			$this->strId,
+			(strlen($this->strClass) ? ' ' . $this->strClass : ''),
+			$this->getAttributes(),
+			$this->strTagEnding
+		);
+
+		$template .= sprintf(
+			$GLOBALS['TL_LANG']['AVATAR']['file']['1'],
+			$this->extensions,
+			$this->maxlength,
+			$arrImage[0],
+			$arrImage[1]
+		);
+
 		return $template;
 	}
 }  
