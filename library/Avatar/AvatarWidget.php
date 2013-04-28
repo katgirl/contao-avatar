@@ -355,6 +355,10 @@ class AvatarWidget extends \Widget implements \uploadable
 		$objFile  = \FilesModel::findByPk($strAvatar);
 		$template = '';
 
+		if ($objFile === null && $GLOBALS['TL_CONFIG']['avatar_fallback_image']) {
+			$objFile = \FilesModel::findByPk($GLOBALS['TL_CONFIG']['avatar_fallback_image']);
+		}
+
 		if ($objFile !== null) {
 			$template .= '<img src="' . TL_FILES_URL . \Image::get(
 				$objFile->path,

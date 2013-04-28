@@ -11,6 +11,7 @@
 /**
  * Presettings
  */
+$GLOBALS['TL_CONFIG']['avatar_fallback_image']  = '';
 $GLOBALS['TL_CONFIG']['avatar_dir']             = '';
 $GLOBALS['TL_CONFIG']['avatar_name']            = 'avatar_##id##_##firstname##_##lastname##';
 $GLOBALS['TL_CONFIG']['avatar_default_alt']     = '##firstname## ##lastname##';

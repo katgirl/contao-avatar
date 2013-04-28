@@ -107,6 +107,13 @@ class InsertTags extends \System
 			$strAvatar = $objFile->path;
 		}
 
+		else if ($GLOBALS['TL_CONFIG']['avatar_fallback_image'] &&
+			($objFile = \FilesModel::findByPk($GLOBALS['TL_CONFIG']['avatar_fallback_image'])) &&
+			file_exists(TL_ROOT . '/' . $objFile->path)
+		) {
+			$strAvatar = $objFile->path;
+		}
+
 		// no avatar is set, but gender is available
 		else if ($strAvatar == '' && \FrontendUser::getInstance()->gender != '') {
 			$strAvatar = "system/modules/avatar/assets/" . \FrontendUser::getInstance()->gender . ".png";
@@ -151,7 +158,14 @@ class InsertTags extends \System
 
 	protected function generateAnonymousAvatar($arrDims)
 	{
-		$strAvatar = 'system/modules/avatar/assets/male.png';
+		if ($GLOBALS['TL_CONFIG']['avatar_fallback_image'] &&
+			($objFile = \FilesModel::findByPk($GLOBALS['TL_CONFIG']['avatar_fallback_image']))
+		) {
+			$strAvatar = $objFile->path;
+		}
+		else {
+			$strAvatar = 'system/modules/avatar/assets/male.png';
+		}
 
 		$this->resize($strAvatar, $arrDims);
 

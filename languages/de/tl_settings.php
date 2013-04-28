@@ -8,38 +8,43 @@
  * @license    http://opensource.org/licenses/lgpl-3.0.html LGPL
  */
 
-$GLOBALS['TL_LANG']['tl_settings']['avatar_legend']   = "Avatar";
-$GLOBALS['TL_LANG']['tl_settings']['avatar_dir']      = array
+$GLOBALS['TL_LANG']['tl_settings']['avatar_legend']         = "Avatar";
+$GLOBALS['TL_LANG']['tl_settings']['avatar_fallback_image'] = array
+(
+	"Avatar Standardbild",
+	"Wählen Sie hier ein alternatives Standardbild aus, für Mitglieder ohne Avatar."
+);
+$GLOBALS['TL_LANG']['tl_settings']['avatar_dir']            = array
 (
 	"Basisverzeichnis",
 	"Basisverzeichnis auswählen. Der empfohlene Ort is <em>files/avatars</em>."
 );
-$GLOBALS['TL_LANG']['tl_settings']['avatar_maxsize']  = array
+$GLOBALS['TL_LANG']['tl_settings']['avatar_maxsize']        = array
 (
 	"Maximale Dateigrösse.",
 	"Maximale Dateigrösse in Byte."
 );
-$GLOBALS['TL_LANG']['tl_settings']['avatar_maxdims']  = array
+$GLOBALS['TL_LANG']['tl_settings']['avatar_maxdims']        = array
 (
 	"Maximale Abmessungen",
 	"Auswahl der maximalen Breite und Höhe in Pixeln."
 );
-$GLOBALS['TL_LANG']['tl_settings']['avatar_resize']   = array
+$GLOBALS['TL_LANG']['tl_settings']['avatar_resize']         = array
 (
 	'Bild beim Upload verkleinern',
 	'Größere Bilder beim Upload verkleinern, wenn das Bild die maximalen Abmessungen überschreitet.'
 );
-$GLOBALS['TL_LANG']['tl_settings']['avatar_rename']   = array
+$GLOBALS['TL_LANG']['tl_settings']['avatar_rename']         = array
 (
 	'Datei umbenennen',
 	'Ändert den Dateinamen des hochgeladenen Avatars.'
 );
-$GLOBALS['TL_LANG']['tl_settings']['avatar_name']     = array
+$GLOBALS['TL_LANG']['tl_settings']['avatar_name']           = array
 (
 	'Dateiname',
 	'Bitte geben Sie hier den neuen Dateinamen ein (Simple-Tokens sind erlaubt).'
 );
-$GLOBALS['TL_LANG']['tl_settings']['avatar_filetype'] = array
+$GLOBALS['TL_LANG']['tl_settings']['avatar_filetype']       = array
 (
 	"Erlaubte Upload-Dateitypen",
 	"Hier können Sie eine kommagetrennte Liste von Dateitypen eingeben, die als Avatar hochgeladen werden dürfen."

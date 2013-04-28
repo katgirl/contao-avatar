@@ -12,7 +12,8 @@
  * Add to palette
  */
 $GLOBALS['TL_DCA']['tl_settings']['palettes']['__selector__'][] = 'avatar_rename';
-$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] .= ';{avatar_legend},avatar_dir,avatar_default,' .
+$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] .= ';{avatar_legend},avatar_fallback_image,'.
+	'avatar_dir,avatar_default,' .
 	'avatar_maxsize,avatar_filetype,avatar_maxdims,avatar_resize,' .
 	'avatar_rename,' .
 	'avatar_default_alt,avatar_anonymous_alt,' .
@@ -24,6 +25,14 @@ $GLOBALS['TL_DCA']['tl_settings']['subpalettes']['avatar_rename'] = 'avatar_name
 /**
  * Add fields
  */
+$GLOBALS['TL_DCA']['tl_settings']['fields']['avatar_fallback_image'] = array
+(
+	'label'     => &$GLOBALS['TL_LANG']['tl_settings']['avatar_fallback_image'],
+	'exclude'   => true,
+	'inputType' => 'fileTree',
+	'eval'      => array('fieldType' => 'radio', 'files' => true, 'filesOnly' => true)
+);
+
 $GLOBALS['TL_DCA']['tl_settings']['fields']['avatar_dir'] = array
 (
 	'label'     => &$GLOBALS['TL_LANG']['tl_settings']['avatar_dir'],
