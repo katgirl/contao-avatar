@@ -3,6 +3,7 @@
  * Avatar for Contao Open Source CMS
  *
  * Copyright (C) 2013 Kirsten Roschanski
+ * Copyright (C) 2013 Tristan Lins <http://bit3.de>
  *
  * @package    Avatar
  * @license    http://opensource.org/licenses/lgpl-3.0.html LGPL
@@ -16,7 +17,9 @@ namespace KirstenRoschanski\Avatar\Module;
  * Front end module Avatar.
  *
  * @copyright  Kirsten Roschanski (C) 2013
+ * @copyright  Tristan Lins (C) 2013
  * @author     Kirsten Roschanski <kirsten@kat-webdesign.de>
+ * @author     Tristan Lins <tristan.lins@bit3.de>
  */
 class AvatarModule extends \Module
 {
