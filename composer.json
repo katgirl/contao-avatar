@@ -1,0 +1,37 @@
+{
+	"name":"kirsten-roschanski/avatar",
+	"description":"Avatar",
+	"keywords":["contao", "avatar", "member"],
+	"type":"contao-module",
+	"homepage":"",
+	"license":"LGPL-3.0+",
+	"authors":[
+		{
+			"name":"Kirsten Roschanski",
+			"email":"kontakt@kirsten-roschanski.de",
+			"homepage":"http://kirsten-roschanski.de",
+			"role":"Developer"
+		},
+		{
+			"name":"Tristan Lins",
+			"email":"tristan.lins@bit3.de",
+			"homepage":"http://bit3.de",
+			"role":"Developer"
+		}
+	],
+	"support":{
+    "email":"kontakt@kirsten-roschanski.de",
+		"issues":"https://github.com/katgirl/avatar/issues",
+		"forum":"",
+		"wiki":"http://de.contaowiki.org/Avatar",
+		"irc":"irc://irc.freenode.org/contao.dev",
+		"source":"https://github.com/katgirl/avatar" 
+	},
+	"require":{
+		"php":">=5.3",
+		"contao/core":"3.0",
+	},
+	"autoload": {
+		"classmap": ["src/"]
+	}
+}
