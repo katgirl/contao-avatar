@@ -37,5 +37,5 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['avatar'] = array
 		'feGroup'        => 'personal',
 		'doNotOverwrite' => !$GLOBALS['TL_CONFIG']['avatar_rename']
 	),
-	'sql'       => "varchar(255) NOT NULL default ''"
+	'sql'       => "varchar(255) NULL"
 );
