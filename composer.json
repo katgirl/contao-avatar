@@ -1,5 +1,5 @@
 {
-  "name":"kirsten-roschanski/avatar",
+  "name":"kirsten-roschanski/contao-avatar",
   "description":"Avatar",
   "keywords":["contao", "avatar", "member"],
   "type":"contao-module",
@@ -21,11 +21,11 @@
   ],
   "support":{
     "email":"kontakt@kirsten-roschanski.de",
-    "issues":"https://github.com/katgirl/avatar/issues",
+    "issues":"https://github.com/katgirl/contao-avatar/issues",
     "forum":"",
     "wiki":"http://de.contaowiki.org/Avatar",
     "irc":"irc://irc.freenode.org/contao.dev",
-    "source":"https://github.com/katgirl/avatar" 
+    "source":"https://github.com/katgirl/contao-avatar" 
   },
   "require":{
     "php":">=5.3",
