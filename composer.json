@@ -31,6 +31,9 @@
     "php":">=5.3",
     "contao/core": ">=3,<4"
   },
+  "replace":{
+    "contao-legacy/avatar": "*"
+  },
   "autoload": {
     "classmap": ["src/"]
   }
