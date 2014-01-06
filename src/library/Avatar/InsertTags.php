@@ -104,14 +104,14 @@ class InsertTags extends \System
 
 		// avatar available and file exists
 		if ($strAvatar &&
-			($objFile = \FilesModel::findByPk($strAvatar)) &&
+			($objFile = \FilesModel::findByUuid($strAvatar)) &&
 			file_exists(TL_ROOT . '/' . $objFile->path)
 		) {
 			$strAvatar = $objFile->path;
 		}
 
 		else if ($GLOBALS['TL_CONFIG']['avatar_fallback_image'] &&
-			($objFile = \FilesModel::findByPk($GLOBALS['TL_CONFIG']['avatar_fallback_image'])) &&
+			($objFile = \FilesModel::findByUuid($GLOBALS['TL_CONFIG']['avatar_fallback_image'])) &&
 			file_exists(TL_ROOT . '/' . $objFile->path)
 		) {
 			$strAvatar = $objFile->path;
@@ -162,7 +162,7 @@ class InsertTags extends \System
 	protected function generateAnonymousAvatar($arrDims)
 	{
 		if ($GLOBALS['TL_CONFIG']['avatar_fallback_image'] &&
-			($objFile = \FilesModel::findByPk($GLOBALS['TL_CONFIG']['avatar_fallback_image']))
+			($objFile = \FilesModel::findByUuid($GLOBALS['TL_CONFIG']['avatar_fallback_image']))
 		) {
 			$strAvatar = $objFile->path;
 		}
