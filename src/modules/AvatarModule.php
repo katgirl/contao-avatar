@@ -94,10 +94,10 @@ class AvatarModule extends \Module
 		$strAvatar = $this->User->avatar;
 		$strAlt    = $this->User->firstname . " " . $this->User->lastname;
 
-		$objFile = \FilesModel::findByPk($strAvatar);
+		$objFile = \FilesModel::findByUuid($strAvatar);
 
 		if ($objFile === null && $GLOBALS['TL_CONFIG']['avatar_fallback_image']) {
-			$objFile = \FilesModel::findByPk($GLOBALS['TL_CONFIG']['avatar_fallback_image']);
+			$objFile = \FilesModel::findByUuid($GLOBALS['TL_CONFIG']['avatar_fallback_image']);
 		}
 
 		if ($objFile !== null) {
@@ -251,7 +251,7 @@ class AvatarModule extends \Module
 				$intUploadFolder = $this->User->homeDir;
 			}
 
-			$objUploadFolder = \FilesModel::findByPk($intUploadFolder);
+			$objUploadFolder = \FilesModel::findByUuid($intUploadFolder);
 
 			// The upload folder could not be found
 			if ($objUploadFolder === null) {
@@ -316,33 +316,21 @@ class AvatarModule extends \Module
 						$objFile->save();
 					}
 					else {
-						$objFile = new \File($strFile, true);
-
-						$objNew            = new \FilesModel();
-						$objNew->pid       = $objUploadFolder->id;
-						$objNew->tstamp    = time();
-						$objNew->type      = 'file';
-						$objNew->path      = $strFile;
-						$objNew->extension = $objFile->extension;
-						$objNew->hash      = md5_file(TL_ROOT . '/' . $strFile);
-						$objNew->name      = $objFile->basename;
-						$objNew->save();
+						\Dbafs::addResource($strFile);
 					}
 
 					// Update the hash of the target folder
-					$objFolder             = new \Folder($strUploadFolder);
-					$objUploadFolder->hash = $objFolder->hash;
-					$objUploadFolder->save();
+          \Dbafs::updateFolderHashes($strUploadFolder);
 				}
 
 				// Update Userdata
 				$strFile = $strUploadFolder . '/' . $file['name'];
-				$objFile = \FilesModel::findByPath($strFile);
+        $objFile = \FilesModel::findByPath($strFile);
 
 				// new Avatar for Member
 				\Database::getInstance()
 					->prepare("UPDATE tl_member SET avatar=? WHERE id=?")
-					->execute($objFile->id, $this->User->id);
+					->execute($objFile->uuid, $this->User->id);
 
 				$this->log(
 					'File "' . $file['name'] . '" has been moved to "' . $strUploadFolder . '"',

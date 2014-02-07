@@ -73,7 +73,7 @@ class RenameAvatars extends \Backend implements \executable
 			$count = 0;
 
 			while ($member->next()) {
-				$avatarRecord = \FilesModel::findByPk($member->avatar);
+				$avatarRecord = \FilesModel::findByUuid($member->avatar);
 				if ($avatarRecord) {
 					$avatar = $avatarRecord->path;
 				}

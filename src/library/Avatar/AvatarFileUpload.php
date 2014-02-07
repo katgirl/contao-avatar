@@ -84,7 +84,8 @@ class AvatarFileUpload extends \Widget implements \uploadable
 				->limit(1)
 				->execute($this->activeRecord->id);
 
-			$this->{$this->strOrderField} = $objRow->{$this->strOrderField};
+			$tmp = deserialize($objRow->{$this->strOrderField});
+      $this->{$this->strOrderField} = (!empty($tmp) && is_array($tmp)) ? array_filter($tmp) : array();
 		}
 	}
 
@@ -98,21 +99,41 @@ class AvatarFileUpload extends \Widget implements \uploadable
 	 */
 	protected function validator($varInput)
 	{
-		// Store the order value
-		if ($this->strOrderField != '') {
-			$this->Database
-				->prepare("UPDATE {$this->strTable} SET {$this->strOrderField}=? WHERE id=?")
-				->execute(\Input::post($this->strOrderName), \Input::get('id'));
-		}
+    // Store the order value
+    if ($this->strOrderField != '')
+    {
+      $arrNew = array_map('String::uuidToBin', explode(',', \Input::post($this->strOrderName)));
 
-		// Return the value as usual
-		if (strpos($varInput, ',') === false) {
-			return intval($varInput);
-		}
-		else {
-			$arrValue = array_map('intval', array_filter(explode(',', $varInput)));
-			return $arrValue[0];
-		}
+      // Only proceed if the value has changed
+      if ($arrNew !== $this->{$this->strOrderField})
+      {
+        $this->Database->prepare("UPDATE {$this->strTable} SET tstamp=?, {$this->strOrderField}=? WHERE id=?")
+                                   ->execute(time(), serialize($arrNew), \Input::get('id'));
+
+        $this->objDca->createNewVersion = true; // see #6285
+      }
+    }
+
+    // Return the value as usual
+    if ($varInput == '')
+    {
+      if ($this->mandatory)
+      {
+        $this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['mandatory'], $this->strLabel));
+      }
+
+      return '';
+    }
+    elseif (strpos($varInput, ',') === false)
+    {
+      $varInput = \String::uuidToBin($varInput);
+      return $this->blnIsMultiple ? array($varInput) : $varInput;
+    }
+    else
+    {
+      $arrValue = array_filter(explode(',', $varInput));
+      return $this->blnIsMultiple ? array_map('String::uuidToBin', $arrValue) : \String::uuidToBin($arrValue[0]);
+    }
 	}
 
 
@@ -123,96 +144,75 @@ class AvatarFileUpload extends \Widget implements \uploadable
 	 */
 	public function generate()
 	{
-		$strValues = '';
-		$arrValues = array();
+    $arrSet = array();
+    $arrValues = array();
+    $blnHasOrder = ($this->strOrderField != '' && is_array($this->{$this->strOrderField}));
+    $arrImage = deserialize($GLOBALS['TL_CONFIG']['avatar_maxdims']);
 
-		if (!empty($this->varValue)) // Can be an array
-		{
-			$strValues       = implode(',', array_map('intval', (array) $this->varValue));
-			$objFiles        = $this->Database->execute(
-				"SELECT id, path, type FROM tl_files WHERE id IN($strValues) ORDER BY " . $this->Database->findInSet(
-					'id',
-					$strValues
-				)
-			);
-			$allowedDownload = trimsplit(',', strtolower($GLOBALS['TL_CONFIG']['avatar_filetype']));
+    if (!empty($this->varValue)) // Can be an array
+    {
+      $objFiles = \FilesModel::findMultipleByUuids((array)$this->varValue);
+      $allowedDownload = trimsplit(',', strtolower($GLOBALS['TL_CONFIG']['allowedDownload']));
 
-			while ($objFiles->next()) {
-				// File system and database seem not in sync
-				if (!file_exists(TL_ROOT . '/' . $objFiles->path)) {
-					continue;
-				}
+      if ($objFiles !== null)
+      {
+        while ($objFiles->next())
+        {
+          // File system and database seem not in sync
+          if (!file_exists(TL_ROOT . '/' . $objFiles->path))
+          {
+            continue;
+          }
 
-				$objFile = new \File($objFiles->path);
-				if (in_array($objFile->extension, $allowedDownload) && !preg_match(
-					'/^meta(_[a-z]{2})?\.txt$/',
-					$objFile->basename
-				)
-				) {
-					$arrValues[$objFiles->id] = $this->generateImage($objFile->icon) . ' ' . $objFiles->path;
-				}
-			}
+          $arrSet[] = $objFiles->uuid;
 
-			// Apply a custom sort order
-			if ($this->strOrderField != '' && $this->{$this->strOrderField} != '') {
-				$arrNew   = array();
-				$arrOrder = array_map('intval', explode(',', $this->{$this->strOrderField}));
+          if ($objFiles->type == 'folder')
+          {
+            continue;
+          }
 
-				foreach ($arrOrder as $i) {
-					if (isset($arrValues[$i])) {
-						$arrNew[$i] = $arrValues[$i];
-						unset($arrValues[$i]);
-					}
-				}
+          $objFile = new \File($objFiles->path, true);
+          $strInfo = $objFiles->path . ' <span class="tl_gray">(' . $this->getReadableSize($objFile->size) . ($objFile->isGdImage ? ', ' . $arrImage[0] . 'x' . $arrImage[1] . ' px' : '') . ')</span>';
+          $arrValues[$objFiles->uuid] = \Image::getHtml(\Image::get($objFiles->path, $arrImage[0], $arrImage[1], $arrImage[2]), '', 'class="gimage" title="' . specialchars($strInfo) . '"');
+        }
+      }
+    }
+   
+    if(count($arrValues) === 0)
+    {
+      $objFile = \FilesModel::findByUuid($GLOBALS['TL_CONFIG']['avatar_fallback_image']);    
+      $strInfo = $objFile->path . ' <span class="tl_gray">(' . $this->getReadableSize($objFile->size) . ($objFile->isGdImage ? ', ' . $arrImage[0] . 'x' . $arrImage[1] . ' px' : '') . ')</span>';
+      $arrValues[$objFile->uuid] = \Image::getHtml(\Image::get($objFile->path, $arrImage[0], $arrImage[1], $arrImage[2]), '', 'class="gimage" title="' . specialchars($strInfo) . '"');
+    }
 
-				if (!empty($arrValues)) {
-					foreach ($arrValues as $k => $v) {
-						$arrNew[$k] = $v;
-					}
-				}
+    // Load the fonts for the drag hint (see #4838)
+    $GLOBALS['TL_CONFIG']['loadGoogleFonts'] = true;
 
-				$arrValues = $arrNew;
-				unset($arrNew);
-			}
-		}
+    // Convert the binary UUIDs
+    $strSet = implode(',', array_map('String::binToUuid', $arrSet));
+    $strOrder = $blnHasOrder ? implode(',', array_map('String::binToUuid', $this->{$this->strOrderField})) : '';
 
-		$arrImage = deserialize($GLOBALS['TL_CONFIG']['avatar_maxdims']);
+    $return = '<input type="hidden" name="'.$this->strName.'" id="ctrl_'.$this->strId.'" value="'.$strSet.'">' . ($blnHasOrder ? '
+<input type="hidden" name="'.$this->strOrderName.'" id="ctrl_'.$this->strOrderId.'" value="'.$strOrder.'">' : '') . '
+<div class="selector_container">' . (($blnHasOrder && count($arrValues)) ? '
+<p class="sort_hint">' . $GLOBALS['TL_LANG']['MSC']['dragItemsHint'] . '</p>' : '') . '
+<ul id="sort_'.$this->strId.'" class="'.trim(($blnHasOrder ? 'sortable ' : '').($this->blnIsGallery ? 'sgallery' : '')).'">';
 
-		$return = '<img src="' . TL_FILES_URL . \Image::get(
-			$objFile->path,
-			$arrImage[0],
-			$arrImage[1],
-			$arrImage[2]
-		) . '" alt="' . $strAlt . '" class="avatar">
-  <input type="hidden" name="' . $this->strName . '" id="ctrl_' . $this->strId . '" value="' . $strValues . '">' . (($this->strOrderField != '')
-			? '
-  <input type="hidden" name="' . $this->strOrderName . '" id="ctrl_' . $this->strOrderId . '" value="' . $this->{$this->strOrderField} . '">'
-			: '') . '
-  <div class="selector_container" id="target_' . $this->strId . '">' . (($this->strOrderField != '' && count(
-			$arrValues
-		)) ? '
-    <p id="hint_' . $this->strId . '" class="sort_hint">' . $GLOBALS['TL_LANG']['MSC']['dragItemsHint'] . '</p>' : '') . '
-    <ul id="sort_' . $this->strId . '" class="' . trim(
-			(($this->strOrderField != '') ? 'sortable ' : '') . ($this->blnIsGallery ? 'sgallery' : '')
-		) . '">';
+    foreach ($arrValues as $k=>$v)
+    {
+      $return .= '<li data-id="'.\String::binToUuid($k).'">'.$v.'</li>';
+    }
 
-		foreach ($arrValues as $k => $v) {
-			$return .= '<li data-id="' . $k . '">' . $v . '</li>';
-		}
+    $return .= '</ul>
+<p><a href="contao/file.php?do='.\Input::get('do').'&amp;table='.$this->strTable.'&amp;field='.$this->strField.'&amp;act=show&amp;id='.\Input::get('id').'&amp;value='.$strSet.'&amp;rt='.REQUEST_TOKEN.'" class="tl_submit" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':765,\'title\':\''.specialchars(str_replace("'", "\\'", $GLOBALS['TL_LANG']['MSC']['filepicker'])).'\',\'url\':this.href,\'id\':\''.$this->strId.'\'});return false">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>' . ($blnHasOrder ? '
+<script>Backend.makeMultiSrcSortable("sort_'.$this->strId.'", "ctrl_'.$this->strOrderId.'")</script>' : '') . '
+</div>';
 
-		$return .= '</ul>
-    <p><a href="contao/file.php?do=' . \Input::get(
-			'do'
-		) . '&amp;table=' . $this->strTable . '&amp;field=' . $this->strField . '&amp;act=show&amp;id=' . \Input::get(
-			'id'
-		) . '&amp;value=' . $strValues . '&amp;rt=' . REQUEST_TOKEN . '" class="tl_submit" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':765,\'title\':\'' . specialchars(
-			str_replace("'", "\\'", $GLOBALS['TL_LANG']['MOD']['files'][0])
-		) . '\',\'url\':this.href,\'id\':\'' . $this->strId . '\'});return false">' . $GLOBALS['TL_LANG']['MSC']['changeSelection'] . '</a></p>' . (($this->strOrderField != '')
-			? '
-    <script>Backend.makeMultiSrcSortable("sort_' . $this->strId . '", "ctrl_' . $this->strOrderId . '");window.addEvent("sm_hide",function(){$("hint_' . $this->strId . '").destroy();$("sort_' . $this->strId . '").removeClass("sortable")})</script>'
-			: '') . '
-  </div>';
+    if (!\Environment::get('isAjaxRequest'))
+    {
+      $return = '<div>' . $return . '</div>';
+    }
 
-		return $return;
+    return $return;
 	}
 }	
