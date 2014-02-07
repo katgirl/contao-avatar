@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Contao Open Source CMS
+ * Avatar for Contao Open Source CMS
  *
- * Copyright (c) 2005-2013 Leo Feyer
+ * Copyright (C) 2013 Kirsten Roschanski
+ * Copyright (C) 2013 Tristan Lins <http://bit3.de>
  *
- * @package Avatar
- * @link    https://contao.org
- * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
+ * @package    Avatar
+ * @license    http://opensource.org/licenses/lgpl-3.0.html LGPL
  */
 
 

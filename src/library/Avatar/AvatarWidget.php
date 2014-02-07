@@ -214,7 +214,7 @@ class AvatarWidget extends \Widget implements \uploadable
 					$intUploadFolder = $this->User->homeDir;
 				}
 
-				$objUploadFolder = \FilesModel::findByPk($intUploadFolder);
+				$objUploadFolder = \FilesModel::findByUuid($intUploadFolder);
 
 				// The upload folder could not be found
 				if ($objUploadFolder === null) {
@@ -300,33 +300,25 @@ class AvatarWidget extends \Widget implements \uploadable
 							$objFile->save();
 						}
 						else {
-							$objFile = new \File($strFile, true);
-
-							$objNew            = new \FilesModel();
-							$objNew->pid       = $objUploadFolder->id;
-							$objNew->tstamp    = time();
-							$objNew->type      = 'file';
-							$objNew->path      = $strFile;
-							$objNew->extension = $objFile->extension;
-							$objNew->hash      = md5_file(TL_ROOT . '/' . $strFile);
-							$objNew->name      = $objFile->basename;
-							$objNew->save();
+              \Dbafs::addResource($strFile);
 						}
 
 						// Update the hash of the target folder
-						$objFolder             = new \Folder($strUploadFolder);
-						$objUploadFolder->hash = $objFolder->hash;
-						$objUploadFolder->save();
+            \Dbafs::updateFolderHashes($strUploadFolder);
 					}
 
-					// Update Userdata
-					$this->value = \Database::getInstance()
-						->prepare("SELECT id FROM tl_files WHERE hash=?")
-						->execute(md5_file(TL_ROOT . '/' . $strFile))->id;
+          // Update Userdata
+          $strFile = $strUploadFolder . '/' . $file['name'];
+          $objFile = \FilesModel::findByPath($strFile);
+
+          // new Avatar for Member
+          \Database::getInstance()
+            ->prepare("UPDATE tl_member SET avatar=? WHERE id=?")
+            ->execute($objFile->uuid, $this->User->id);
 
 					$this->log(
 						'File "' . $targetName . '" has been moved to "' . $strUploadFolder . '"',
-						'FormFileUpload validate()',
+						__METHOD__,
 						TL_FILES
 					);
 				}
@@ -355,11 +347,11 @@ class AvatarWidget extends \Widget implements \uploadable
 		$strAvatar = $this->User->avatar;
 		$strAlt    = $this->User->firstname . " " . $this->User->lastname;
 
-		$objFile  = \FilesModel::findByPk($strAvatar);
+		$objFile  = \FilesModel::findByUuid($strAvatar);
 		$template = '';
 
 		if ($objFile === null && $GLOBALS['TL_CONFIG']['avatar_fallback_image']) {
-			$objFile = \FilesModel::findByPk($GLOBALS['TL_CONFIG']['avatar_fallback_image']);
+			$objFile = \FilesModel::findByUuid($GLOBALS['TL_CONFIG']['avatar_fallback_image']);
 		}
 
 		if ($objFile !== null) {

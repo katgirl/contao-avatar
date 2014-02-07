@@ -17,8 +17,8 @@ $GLOBALS['TL_DCA']['tl_user']['palettes']['login'] .= ';{avatar_legend:hide},ava
 foreach (array('admin', 'default', 'group', 'extend', 'custom') as $pal) {
 	$GLOBALS['TL_DCA']['tl_user']['palettes'][$pal] = str_replace
 	(
-		';{account_legend},disable,start,stop',
-		';{avatar_legend:hide},avatar;{account_legend},disable,start,stop',
+		';{account_legend}',
+		';{avatar_legend:hide},avatar;{account_legend}',
 		$GLOBALS['TL_DCA']['tl_user']['palettes'][$pal]
 	);
 }
@@ -30,7 +30,13 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['avatar'] = array
 (
 	'label'     => &$GLOBALS['TL_LANG']['tl_user']['avatar'],
 	'exclude'   => true,
-	'inputType' => 'avatar',
-	'eval'      => array('fieldType' => 'radio', 'files' => true, 'tl_class' => 'clr', 'filename' => 'member_%s'),
-	'sql'       => "varchar(255) NOT NULL default ''"
+	'inputType' => 'fileTree',
+	'eval'      => array
+  (
+    'fieldType'     => 'radio', 
+    'filesOnly'     => true, 
+    'tl_class'      => 'clr', 
+    'filename'      => 'member_%s'
+  ),
+	'sql'       => "binary(16) NULL"
 );
