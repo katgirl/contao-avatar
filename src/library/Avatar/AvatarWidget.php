@@ -300,21 +300,20 @@ class AvatarWidget extends \Widget implements \uploadable
 							$objFile->save();
 						}
 						else {
-              \Dbafs::addResource($strFile);
+							\Dbafs::addResource($strFile);
 						}
 
 						// Update the hash of the target folder
-            \Dbafs::updateFolderHashes($strUploadFolder);
+						\Dbafs::updateFolderHashes($strUploadFolder);
 					}
 
-          // Update Userdata
-          $strFile = $strUploadFolder . '/' . $file['name'];
-          $objFile = \FilesModel::findByPath($strFile);
+					// Update Userdata
+					$objFile = \FilesModel::findByPath($strUploadFolder . '/' . $targetName);
 
-          // new Avatar for Member
-          \Database::getInstance()
-            ->prepare("UPDATE tl_member SET avatar=? WHERE id=?")
-            ->execute($objFile->uuid, $this->User->id);
+					// new Avatar for Member
+					\Database::getInstance()
+						->prepare("UPDATE tl_member SET avatar=? WHERE id=?")
+						->execute($objFile->uuid, $this->User->id);
 
 					$this->log(
 						'File "' . $targetName . '" has been moved to "' . $strUploadFolder . '"',
@@ -398,4 +397,4 @@ class AvatarWidget extends \Widget implements \uploadable
 
 		return $template;
 	}
-}  
+}
