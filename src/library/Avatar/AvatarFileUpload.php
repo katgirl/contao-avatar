@@ -180,7 +180,7 @@ class AvatarFileUpload extends \Widget implements \uploadable
    
     if(count($arrValues) === 0)
     {
-      $objFile = \FilesModel::findByUuid($GLOBALS['TL_CONFIG']['avatar_fallback_image']);    
+      $objFile = \FilesModel::findByPath($GLOBALS['TL_CONFIG']['avatar_fallback_image']);    
       $strInfo = $objFile->path . ' <span class="tl_gray">(' . $this->getReadableSize($objFile->size) . ($objFile->isGdImage ? ', ' . $arrImage[0] . 'x' . $arrImage[1] . ' px' : '') . ')</span>';
       $arrValues[$objFile->uuid] = \Image::getHtml(\Image::get($objFile->path, $arrImage[0], $arrImage[1], $arrImage[2]), '', 'class="gimage" title="' . specialchars($strInfo) . '"');
     }
@@ -200,7 +200,7 @@ class AvatarFileUpload extends \Widget implements \uploadable
 
     foreach ($arrValues as $k=>$v)
     {
-      $return .= '<li data-id="'.\String::binToUuid($k).'">'.$v.'</li>';
+      $return .= $k ? '<li data-id="'.\String::binToUuid($k).'">'.$v.'</li>' : '';
     }
 
     $return .= '</ul>
