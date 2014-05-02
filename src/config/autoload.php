@@ -26,6 +26,7 @@ ClassLoader::addNamespaces(array
 ClassLoader::addClasses(array
 (
 	// Library
+	'KirstenRoschanski\Avatar\AvatarBackend'           => 'system/modules/avatar/library/Avatar/AvatarBackend.php',
 	'KirstenRoschanski\Avatar\InsertTags'              => 'system/modules/avatar/library/Avatar/InsertTags.php',
 	'KirstenRoschanski\Avatar\Widget\AvatarFileUpload' => 'system/modules/avatar/library/Avatar/AvatarFileUpload.php',
 	'KirstenRoschanski\Avatar\RenameAvatars'           => 'system/modules/avatar/library/Avatar/RenameAvatars.php',
