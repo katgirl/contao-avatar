@@ -12,7 +12,7 @@
 $GLOBALS['TL_LANG']['AVATAR']['file']  = array
 (
 	"Neuen Avatar hochladen",
-	"Erlaubte Dateitypen: %s.<br/>\nMaximale Dateigrösse: %s Byte.<br/>\nMaximale Abmessungen: %s x %s Pixel."
+	"Erlaubte Dateitypen: %s.<br/>\nMaximale Dateigröße: %s Byte.<br/>\nMaximale Abmessungen: %s x %s Pixel."
 );
 $GLOBALS['TL_LANG']['AVATAR']['save']  = "Avatar speichern";
 $GLOBALS['TL_LANG']['AVATAR']['reset'] = "Zurücksetzen auf Vorgabe";

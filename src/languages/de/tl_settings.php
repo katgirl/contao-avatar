@@ -22,8 +22,8 @@ $GLOBALS['TL_LANG']['tl_settings']['avatar_dir']            = array
 );
 $GLOBALS['TL_LANG']['tl_settings']['avatar_maxsize']        = array
 (
-	"Maximale Dateigrösse.",
-	"Maximale Dateigrösse in Byte."
+	"Maximale Dateigröße.",
+	"Maximale Dateigröße in Byte."
 );
 $GLOBALS['TL_LANG']['tl_settings']['avatar_maxdims']        = array
 (
@@ -76,10 +76,10 @@ $GLOBALS['TL_LANG']['tl_settings']['avatar_anonymous_title'] = array
 $GLOBALS['TL_LANG']['tl_settings']['avatar_default_class']   = array
 (
 	"Standard CSS-Klasse",
-	"Bitte geben Sie hier den CSS-Klasse ein, der Standardmäßig verwendet werden soll (Simple-Tokens sind erlaubt)."
+	"Bitte geben Sie hier die CSS-Klasse ein, die standardmäßig verwendet werden soll (Simple-Tokens sind erlaubt)."
 );
 $GLOBALS['TL_LANG']['tl_settings']['avatar_anonymous_class'] = array
 (
 	"Anonymous CSS-Klasse",
-	"Bitte geben Sie hier den CSS-Klasse ein, der verwendet werden soll wenn keine Daten verfügbar sind."
+	"Bitte geben Sie hier die CSS-Klasse ein, die verwendet werden soll wenn keine Daten verfügbar sind."
 );
