@@ -79,10 +79,10 @@ class AvatarWidget extends \Widget implements \uploadable
      */
     public function validate()
     {
-        $this->maxlength = $GLOBALS['TL_CONFIG']['avatar_maxsize'];
-        $this->extensions = $GLOBALS['TL_CONFIG']['avatar_filetype'];
+        $this->maxlength    = $GLOBALS['TL_CONFIG']['avatar_maxsize'];
+        $this->extensions   = $GLOBALS['TL_CONFIG']['avatar_filetype'];
         $this->uploadFolder = $GLOBALS['TL_CONFIG']['avatar_dir'];
-        $this->storeFile = $this->uploadFolder != '' ? true : false;
+        $this->storeFile    = $this->uploadFolder != '' ? true : false;
 
         $arrImage = deserialize($GLOBALS['TL_CONFIG']['avatar_maxdims']);
 
@@ -101,7 +101,7 @@ class AvatarWidget extends \Widget implements \uploadable
             return;
         }
 
-        $file = $_FILES[$this->strName];
+        $file         = $_FILES[$this->strName];
         $maxlength_kb = $this->getReadableSize($this->maxlength);
 
         // Romanize the filename
@@ -145,7 +145,7 @@ class AvatarWidget extends \Widget implements \uploadable
         }
 
         $strExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $uploadTypes = trimsplit(',', $this->extensions);
+        $uploadTypes  = trimsplit(',', $this->extensions);
 
         // File type is not allowed
         if (!in_array(strtolower($strExtension), $uploadTypes)) {
@@ -224,8 +224,8 @@ class AvatarWidget extends \Widget implements \uploadable
                     $this->import('Files');
 
                     if ($GLOBALS['TL_CONFIG']['avatar_rename']) {
-                        $pathinfo = pathinfo($file['name']);
-                        $user = \MemberModel::findByPk($this->User->id);
+                        $pathinfo   = pathinfo($file['name']);
+                        $user       = \MemberModel::findByPk($this->User->id);
                         $targetName = standardize(
                                 \String::parseSimpleTokens($GLOBALS['TL_CONFIG']['avatar_name'], $user->row())
                             ) . '.' . $pathinfo['extension'];
@@ -235,11 +235,11 @@ class AvatarWidget extends \Widget implements \uploadable
 
                     // Do not overwrite existing files
                     if ($this->doNotOverwrite && file_exists(TL_ROOT . '/' . $strUploadFolder . '/' . $targetName)) {
-                        $offset = 1;
+                        $offset   = 1;
                         $pathinfo = pathinfo($targetName);
-                        $name = $pathinfo['filename'];
+                        $name     = $pathinfo['filename'];
 
-                        $arrAll = scan(TL_ROOT . '/' . $strUploadFolder);
+                        $arrAll   = scan(TL_ROOT . '/' . $strUploadFolder);
                         $arrFiles = preg_grep(
                             '/^' . preg_quote($name, '/') . '.*\.' . preg_quote($pathinfo['extension'], '/') . '/',
                             $arrAll
@@ -247,7 +247,7 @@ class AvatarWidget extends \Widget implements \uploadable
 
                         foreach ($arrFiles as $strFile) {
                             if (preg_match('/__[0-9]+\.' . preg_quote($pathinfo['extension'], '/') . '$/', $strFile)) {
-                                $strFile = str_replace('.' . $pathinfo['extension'], '', $strFile);
+                                $strFile  = str_replace('.' . $pathinfo['extension'], '', $strFile);
                                 $intValue = intval(substr($strFile, (strrpos($strFile, '_') + 1)));
 
                                 $offset = max($offset, $intValue);
@@ -282,32 +282,13 @@ class AvatarWidget extends \Widget implements \uploadable
                         'uploaded' => true
                     );
 
-                    $this->loadDataContainer('tl_files');
-
-                    if ($GLOBALS['TL_DCA']['tl_files']['config']['databaseAssisted']) {
-                        $strFile = $strUploadFolder . '/' . $targetName;
-                        $objFile = \FilesModel::findByPath($strFile);
-
-                        if ($objFile !== null) {
-                            $objFile->tstamp = time();
-                            $objFile->path = $strFile;
-                            $objFile->hash = md5_file(TL_ROOT . '/' . $strFile);
-                            $objFile->save();
-                        } else {
-                            \Dbafs::addResource($strFile);
-                        }
-
-                        // Update the hash of the target folder
-                        \Dbafs::updateFolderHashes($strUploadFolder);
-                    }
-
-                    // Update Userdata
-                    $objFile = \FilesModel::findByPath($strUploadFolder . '/' . $targetName);
+                    $strFile = $strUploadFolder . '/' . $targetName;
+                    $objModel = \Dbafs::addResource($strFile, true);
 
                     // new Avatar for Member
-                    \Database::getInstance()
-                        ->prepare("UPDATE tl_member SET avatar=? WHERE id=?")
-                        ->execute($objFile->uuid, $this->User->id);
+                    $objMember = \MemberModel::findByPk($this->User->id);
+                    $objMember->avatar = $objModel->uuid;
+                    $objMember->save();
 
                     $this->log(
                         'File "' . $targetName . '" has been moved to "' . $strUploadFolder . '"',
@@ -331,16 +312,16 @@ class AvatarWidget extends \Widget implements \uploadable
     {
         global $objPage;
 
-        $this->maxlength = $GLOBALS['TL_CONFIG']['avatar_maxsize'];
+        $this->maxlength  = $GLOBALS['TL_CONFIG']['avatar_maxsize'];
         $this->extensions = $GLOBALS['TL_CONFIG']['avatar_filetype'];
-        $arrImage = deserialize($GLOBALS['TL_CONFIG']['avatar_maxdims']);
+        $arrImage         = deserialize($GLOBALS['TL_CONFIG']['avatar_maxdims']);
 
         $this->import('FrontendUser', 'User');
 
         $strAvatar = $this->User->avatar;
-        $strAlt = $this->User->firstname . " " . $this->User->lastname;
+        $strAlt    = $this->User->firstname . " " . $this->User->lastname;
 
-        $objFile = \FilesModel::findByUuid($strAvatar);
+        $objFile  = \FilesModel::findByUuid($strAvatar);
         $template = '';
 
         if ($objFile === null && $GLOBALS['TL_CONFIG']['avatar_fallback_image']) {
@@ -389,4 +370,4 @@ class AvatarWidget extends \Widget implements \uploadable
 
         return $template;
     }
-}
+}  
