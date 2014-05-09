@@ -210,7 +210,7 @@ class AvatarWidget extends \Widget implements \uploadable
                     $intUploadFolder = $this->User->homeDir;
                 }
 
-                $objUploadFolder = \FilesModel::findByPath($intUploadFolder);
+                $objUploadFolder = \FilesModel::findByUuid($intUploadFolder);
 
                 // The upload folder could not be found
                 if ($objUploadFolder === null) {

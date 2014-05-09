@@ -32,13 +32,7 @@ class AvatarBackend extends \Backend
 	 */
   public function saveFile($value)
   {
-    if(version_compare(VERSION, '3.2', '>='))
-    {
-      $uuid    = \String::binToUuid($value);
-      $objFile = \FilesModel::findByUuid($uuid);
-      $value   = $objFile->path;
-    }
-    return $value;
+      return \String::binToUuid($value);
   }
   
 	/**
@@ -48,11 +42,6 @@ class AvatarBackend extends \Backend
 	 */
   public function loadFile($value)
   {
-    if(version_compare(VERSION, '3.2', '>='))
-    {
-      $objFile = \FilesModel::findByPath($value);
-      $value   = $objFile->uuid;
-    }
-    return $value;
+      return \String::uuidToBin($value);
   }  
 }  
