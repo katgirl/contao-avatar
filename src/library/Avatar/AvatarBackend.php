@@ -34,8 +34,10 @@ class AvatarBackend extends \Backend
   {
     if(version_compare(VERSION, '3.2', '>='))
     {
-      $uuid    = \String::binToUuid($value);
-      $objFile = \FilesModel::findByUuid($uuid);
+      if (strlen($value) > 16) {
+        $value = \String::uuidToBin($value);
+      }
+      $objFile = \FilesModel::findByUuid($value);
       $value   = $objFile->path;
     }
     return $value;
