@@ -32,7 +32,7 @@ class AvatarBackend extends \Backend
 	 */
   public function saveFile($value)
   {
-      return \String::binToUuid($value);
+    return strlen($value) == 16 ? \String::binToUuid($value) : $value;
   }
   
 	/**
@@ -42,6 +42,6 @@ class AvatarBackend extends \Backend
 	 */
   public function loadFile($value)
   {
-      return \String::uuidToBin($value);
+    return \String::uuidToBin($value);
   }  
 }  
