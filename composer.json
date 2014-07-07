@@ -17,12 +17,15 @@
       "email":"tristan.lins@bit3.de",
       "homepage":"http://bit3.de",
       "role":"Developer"
+    },
+    {
+      "name":"Yanick Witschi",
+      "homepage":"http://www.terminal42.ch",
+      "role":"Developer"
     }
   ],
   "support":{
-    "email":"kontakt@kirsten-roschanski.de",
     "issues":"https://github.com/katgirl/contao-avatar/issues",
-    "forum":"",
     "wiki":"http://de.contaowiki.org/Avatar",
     "irc":"irc://irc.freenode.org/contao.dev",
     "source":"https://github.com/katgirl/contao-avatar" 
