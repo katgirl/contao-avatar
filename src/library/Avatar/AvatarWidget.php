@@ -33,6 +33,13 @@ class AvatarWidget extends \Widget implements \uploadable
     protected $strTemplate = 'form_avatar';
 
     /**
+     * Avatar preview size
+     *
+     * @var array
+     */
+    protected $arrAvatarPreviewSize = array();
+
+    /**
      * Submit user input
      *
      * @var boolean
@@ -65,6 +72,10 @@ class AvatarWidget extends \Widget implements \uploadable
                 if ($varValue > 0) {
                     $this->arrAttributes['size'] = $varValue;
                 }
+                break;
+
+            case 'avatarPreviewSize':
+                $this->arrAvatarPreviewSize = $varValue;
                 break;
 
             default:
@@ -315,6 +326,7 @@ class AvatarWidget extends \Widget implements \uploadable
         $this->maxlength  = $GLOBALS['TL_CONFIG']['avatar_maxsize'];
         $this->extensions = $GLOBALS['TL_CONFIG']['avatar_filetype'];
         $arrImage         = deserialize($GLOBALS['TL_CONFIG']['avatar_maxdims']);
+        $arrPreviewImage  = $this->arrAvatarPreviewSize ?: $arrImage;
 
         $this->import('FrontendUser', 'User');
 
@@ -331,24 +343,24 @@ class AvatarWidget extends \Widget implements \uploadable
         if ($objFile !== null) {
             $template .= '<img src="' . TL_FILES_URL . \Image::get(
                     $objFile->path,
-                    $arrImage[0],
-                    $arrImage[1],
-                    $arrImage[2]
-                ) . '" width="' . $arrImage[0] . '" height="' . $arrImage[1] . '" alt="' . $strAlt . '" class="avatar">';
+                    $arrPreviewImage[0],
+                    $arrPreviewImage[1],
+                    $arrPreviewImage[2]
+                ) . '" width="' . $arrPreviewImage[0] . '" height="' . $arrPreviewImage[1] . '" alt="' . $strAlt . '" class="avatar">';
         } elseif ($this->User->gender != '') {
             $template .= '<img src="' . TL_FILES_URL . \Image::get(
                     "system/modules/avatar/assets/" . $this->User->gender . ".png",
-                    $arrImage[0],
-                    $arrImage[1],
-                    $arrImage[2]
-                ) . '" width="' . $arrImage[0] . '" height="' . $arrImage[1] . '" alt="Avatar" class="avatar">';
+                    $arrPreviewImage[0],
+                    $arrPreviewImage[1],
+                    $arrPreviewImage[2]
+                ) . '" width="' . $arrPreviewImage[0] . '" height="' . $arrPreviewImage[1] . '" alt="Avatar" class="avatar">';
         } else {
             $template .= '<img src="' . TL_FILES_URL . \Image::get(
                     "system/modules/avatar/assets/male.png",
-                    $arrImage[0],
-                    $arrImage[1],
-                    $arrImage[2]
-                ) . '" width="' . $arrImage[0] . '" height="' . $arrImage[1] . '" alt="Avatar" class="avatar">';
+                    $arrPreviewImage[0],
+                    $arrPreviewImage[1],
+                    $arrPreviewImage[2]
+                ) . '" width="' . $arrImage[0] . '" height="' . $arrPreviewImage[1] . '" alt="Avatar" class="avatar">';
         }
 
         $template .= sprintf(
