@@ -301,6 +301,8 @@ class AvatarWidget extends \Widget implements \uploadable
                     $objMember->avatar = $objModel->uuid;
                     $objMember->save();
 
+                    $this->varValue = $objModel->uuid;
+
                     $this->log(
                         'File "' . $targetName . '" has been moved to "' . $strUploadFolder . '"',
                         __METHOD__,
