@@ -181,6 +181,10 @@ class AvatarFileUpload extends \Widget implements \uploadable
     if(count($arrValues) === 0)
     {
       $objFile = \FilesModel::findByPath($GLOBALS['TL_CONFIG']['avatar_fallback_image']);    
+	  if (!$objFile->path)
+	  {
+		  $objFile = new \File('system/modules/avatar/assets/male.png', true);
+	  }
       $strInfo = $objFile->path . ' <span class="tl_gray">(' . $this->getReadableSize($objFile->size) . ($objFile->isGdImage ? ', ' . $arrImage[0] . 'x' . $arrImage[1] . ' px' : '') . ')</span>';
       $arrValues[$objFile->uuid] = \Image::getHtml(\Image::get($objFile->path, $arrImage[0], $arrImage[1], $arrImage[2]), '', 'class="gimage" title="' . specialchars($strInfo) . '"');
     }
