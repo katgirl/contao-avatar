@@ -32,7 +32,7 @@
   },
   "require":{
     "php":">=5.3",
-    "contao/core":">=3.2,<3.4"
+    "contao/core":">=3.2,<3.5"
   },
   "replace":{
     "contao-legacy/avatar": "*"
