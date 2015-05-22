@@ -277,9 +277,9 @@ class AvatarWidget extends \Widget implements \uploadable
                     if ($blnResize) {
                         \Image::resize(
                             $strUploadFolder . '/' . $targetName,
-                            $arrImageSize[0],
-                            $arrImageSize[1],
-                            $arrImageSize[2]
+                            $arrImage[0],
+                            $arrImage[1],
+                            $arrImage[2]
                         );
                     }
 
