@@ -297,9 +297,9 @@ class AvatarWidget extends \Widget implements \uploadable
                     $objModel = \Dbafs::addResource($strFile, true);
 
                     // new Avatar for Member
-                    $objMember = \MemberModel::findByPk($this->User->id);
-                    $objMember->avatar = $objModel->uuid;
-                    $objMember->save();
+					$this->import('FrontendUser', 'User');
+                    $this->User->avatar = $objModel->uuid;
+                    $this->User->save();
 
                     $this->varValue = $objModel->uuid;
 
