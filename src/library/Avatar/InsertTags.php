@@ -118,8 +118,8 @@ class InsertTags extends \System
 		}
 
 		// no avatar is set, but gender is available
-		else if ($strAvatar == '' && \FrontendUser::getInstance()->gender != '') {
-			$strAvatar = "system/modules/avatar/assets/" . \FrontendUser::getInstance()->gender . ".png";
+		else if ($strAvatar == '' && $objMember->gender != '') {
+			$strAvatar = "system/modules/avatar/assets/" . $objMember->gender . ".png";
 		}
 
 		// fallback to default avatar
