@@ -88,7 +88,12 @@ class InsertTags extends \System
 		}
 
 		// search the member record
-		$objMember = \MemberModel::findByPk($arrTag[1]);
+		if($arrTag[2] == 'be')
+        {
+            $objMember = \UserModel::findById($arrTag[1]);
+        } else {
+            $objMember = \MemberModel::findByPk($arrTag[1]);
+        }
 
 		// return anonymous avatar, if member not found
 		if (!$objMember) {
