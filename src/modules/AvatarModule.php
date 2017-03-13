@@ -82,9 +82,20 @@ class AvatarModule extends \Module
 	{
 		global $objPage;
 
+		$uploadFolder = \FilesModel::findByPath($GLOBALS['TL_CONFIG']['avatar_dir']);
+
+		if (!$uploadFolder) {
+			throw new \RuntimeException(
+				sprintf(
+					'Upload folder "%s" is not synchronized with the filesystem',
+					$GLOBALS['TL_CONFIG']['avatar_dir']
+				)
+			);
+		}
+
 		$this->maxlength    = $GLOBALS['TL_CONFIG']['avatar_maxsize'];
 		$this->extensions   = $GLOBALS['TL_CONFIG']['avatar_filetype'];
-		$this->uploadFolder = $GLOBALS['TL_CONFIG']['avatar_dir'];
+		$this->uploadFolder = $uploadFolder->uuid;
 		$this->storeFile    = $this->uploadFolder != '' ? true : false;
 
 		$arrImage = deserialize($GLOBALS['TL_CONFIG']['avatar_maxdims']);
