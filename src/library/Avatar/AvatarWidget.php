@@ -44,7 +44,7 @@ class AvatarWidget extends \Widget implements \uploadable
      *
      * @var boolean
      */
-    protected $blnSubmitInput = true;
+    protected $blnSubmitInput = false;
 
     /**
      * Add specific attributes
