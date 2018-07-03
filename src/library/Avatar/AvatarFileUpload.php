@@ -102,7 +102,7 @@ class AvatarFileUpload extends \Widget implements \uploadable
     // Store the order value
     if ($this->strOrderField != '')
     {
-      $arrNew = array_map('String::uuidToBin', explode(',', \Input::post($this->strOrderName)));
+      $arrNew = array_map('StringUtil::uuidToBin', explode(',', \Input::post($this->strOrderName)));
 
       // Only proceed if the value has changed
       if ($arrNew !== $this->{$this->strOrderField})
@@ -126,13 +126,13 @@ class AvatarFileUpload extends \Widget implements \uploadable
     }
     elseif (strpos($varInput, ',') === false)
     {
-      $varInput = \String::uuidToBin($varInput);
+      $varInput = \StringUtil::uuidToBin($varInput);
       return $this->blnIsMultiple ? array($varInput) : $varInput;
     }
     else
     {
       $arrValue = array_filter(explode(',', $varInput));
-      return $this->blnIsMultiple ? array_map('String::uuidToBin', $arrValue) : \String::uuidToBin($arrValue[0]);
+      return $this->blnIsMultiple ? array_map('StringUtil::uuidToBin', $arrValue) : \StringUtil::uuidToBin($arrValue[0]);
     }
 	}
 
@@ -188,8 +188,8 @@ class AvatarFileUpload extends \Widget implements \uploadable
     $GLOBALS['TL_CONFIG']['loadGoogleFonts'] = true;
 
     // Convert the binary UUIDs
-    $strSet = implode(',', array_map('String::binToUuid', $arrSet));
-    $strOrder = $blnHasOrder ? implode(',', array_map('String::binToUuid', $this->{$this->strOrderField})) : '';
+    $strSet = implode(',', array_map('StringUtil::binToUuid', $arrSet));
+    $strOrder = $blnHasOrder ? implode(',', array_map('StringUtil::binToUuid', $this->{$this->strOrderField})) : '';
 
     $return = '<input type="hidden" name="'.$this->strName.'" id="ctrl_'.$this->strId.'" value="'.$strSet.'">' . ($blnHasOrder ? '
 <input type="hidden" name="'.$this->strOrderName.'" id="ctrl_'.$this->strOrderId.'" value="'.$strOrder.'">' : '') . '
@@ -199,7 +199,7 @@ class AvatarFileUpload extends \Widget implements \uploadable
 
     foreach ($arrValues as $k=>$v)
     {
-      $return .= $k ? '<li data-id="'.\String::binToUuid($k).'">'.$v.'</li>' : '';
+      $return .= $k ? '<li data-id="'.\StringUtil::binToUuid($k).'">'.$v.'</li>' : '';
     }
 
     $return .= '</ul>

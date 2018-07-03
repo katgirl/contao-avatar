@@ -45,7 +45,7 @@ class InsertTags extends \System
 		$strClass = $GLOBALS['TL_CONFIG']['avatar_default_class'];
 
 		// parse query parameters
-		$strParams = \String::decodeEntities($strParams);
+		$strParams = \StringUtil::decodeEntities($strParams);
 		$strParams = str_replace('[&]', '&', $strParams);
 		$arrParams = explode('&', $strParams);
 		foreach ($arrParams as $strParam) {

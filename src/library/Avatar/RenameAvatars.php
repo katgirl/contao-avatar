@@ -85,7 +85,7 @@ class RenameAvatars extends \Backend implements \executable
 				$pathinfo = pathinfo($avatar);
 
 				$newName = standardize(
-					\String::parseSimpleTokens($GLOBALS['TL_CONFIG']['avatar_name'], $member->row())
+					\StringUtil::parseSimpleTokens($GLOBALS['TL_CONFIG']['avatar_name'], $member->row())
 				);
 
 				if ($pathinfo['filename'] != $newName) {
