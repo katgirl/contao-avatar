@@ -238,7 +238,7 @@ class AvatarWidget extends \Widget implements \uploadable
                         $pathinfo   = pathinfo($file['name']);
                         $user       = \MemberModel::findByPk($this->User->id);
                         $targetName = standardize(
-                                \String::parseSimpleTokens($GLOBALS['TL_CONFIG']['avatar_name'], $user->row())
+                                \StringUtil::parseSimpleTokens($GLOBALS['TL_CONFIG']['avatar_name'], $user->row())
                             ) . '.' . $pathinfo['extension'];
                     } else {
                         $targetName = $file['name'];
